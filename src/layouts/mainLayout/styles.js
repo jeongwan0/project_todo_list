@@ -8,6 +8,9 @@ export const layout = css`
 `;
 
 export const main = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-grow: 1;
   padding-left: 10px;
 `;
