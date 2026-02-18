@@ -25,6 +25,7 @@ export const btn = css`
 
   &:hover {
     background-color: #eee;
+    cursor: pointer;
   }
 `;
 

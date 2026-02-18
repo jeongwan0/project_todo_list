@@ -13,4 +13,5 @@ export const main = css`
   align-items: center;
   flex-grow: 1;
   padding-left: 10px;
+  overflow-y: scroll;
 `;
