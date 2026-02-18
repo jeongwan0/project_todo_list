@@ -11,7 +11,6 @@ export default function MainPage() {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
-  const [currentDay, setCurrentDay] = useState(today.getDate());
   const lastDate = useMemo(() => {
     return new Date(currentYear, currentMonth, 0).getDate();
   }, [currentYear, currentMonth]);
@@ -19,6 +18,25 @@ export default function MainPage() {
     return new Date(currentYear, currentMonth - 1, 1).getDay();
   }, [currentYear, currentMonth]);
   const [days, setDays] = useState([]);
+  const [dDay, setDDay] = useState(new Date(currentYear + 1, 0, 1));
+
+  const dDayCalc = (today, dday) => {
+    const todayDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+
+    const ddayDate = new Date(
+      dday.getFullYear(),
+      dday.getMonth(),
+      dday.getDate(),
+    );
+
+    let gap = ddayDate.getTime() - todayDate.getTime();
+    let result = Math.floor(gap / (1000 * 60 * 60 * 24));
+    return result;
+  };
 
   useEffect(() => {
     let newDays = [];
@@ -38,7 +56,7 @@ export default function MainPage() {
     return Array.from({ length: 5 }, (_, w) => (
       <tr key={w} css={s.week}>
         {Array.from({ length: 7 }, (_, d) => (
-          <td key={w * 7 + d + 1} css={s.date}>
+          <td key={w * 7 + d + 1} css={[s.date, s.hover]}>
             <div css={s.tdDate}>{days[w * 7 + d] ?? "\u00A0"}</div>
             {days[w * 7 + d] !== null && (
               <div css={s.tdCkbx}>
@@ -76,21 +94,30 @@ export default function MainPage() {
     }
   };
 
+  const thisMonthClickHandler = () => {
+    setCurrentYear(today.getFullYear());
+    setCurrentMonth(today.getMonth() + 1);
+  };
+
   return (
     <>
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
-          <div css={s.sideDiv}></div>
+          <div css={s.leftDiv}>
+            <button css={s.btn} onClick={thisMonthClickHandler}>
+              이번달로
+            </button>
+          </div>
           <div css={s.midDiv}>
-            <button css={s.btn} onClick={backClickHandler}>
+            <button css={s.arrowBtn} onClick={backClickHandler}>
               <MdKeyboardArrowLeft />
             </button>
             {currentYear}.{currentMonth}
-            <button css={s.btn} onClick={nextClickHandler}>
+            <button css={s.arrowBtn} onClick={nextClickHandler}>
               <MdKeyboardArrowRight />
             </button>
           </div>
-          <div css={s.sideDiv}>중간고사 D-NN</div>
+          <div css={s.rightDiv}>신년 D-{dDayCalc(today, dDay)}</div>
         </div>
         <div css={s.calendarDiv}>
           <table css={s.calendar}>

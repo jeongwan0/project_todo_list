@@ -21,7 +21,16 @@ export const calendarDiv = css`
   background-color: beige;
 `;
 
-export const sideDiv = css`
+export const leftDiv = css`
+  width: 30%;
+  height: 100%;
+  display: flex;
+  justify-content: start;
+  align-items: end;
+  font-size: 30px;
+`;
+
+export const rightDiv = css`
   width: 30%;
   height: 100%;
   display: flex;
@@ -40,6 +49,16 @@ export const midDiv = css`
 `;
 
 export const btn = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  font-size: 30px;
+  border: none;
+  cursor: pointer;
+`;
+
+export const arrowBtn = css`
   width: auto;
   height: 100%;
   font-size: 40px;
@@ -74,6 +93,9 @@ export const date = css`
   font-size: 20px;
   padding: 0;
   vertical-align: middle;
+`;
+
+export const hover = css`
   &:hover {
     background-color: #eee;
     cursor: pointer;

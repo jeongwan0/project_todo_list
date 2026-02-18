@@ -5,9 +5,15 @@ export const header = css`
   height: 10%;
   border-bottom: 1px solid #30364f;
   display: flex;
+  justify-content: center;
+`;
+
+export const innerDiv = css`
+  width: 90%;
+  height: 100%;
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 10px;
 `;
 
 export const logoDiv = css`

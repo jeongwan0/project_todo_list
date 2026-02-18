@@ -35,8 +35,13 @@ function App() {
 
     div,
     p,
-    a {
+    a,
+    button {
       font-family: OngleipParkDahyeon;
+    }
+
+    html {
+      scrollbar-gutter: stable;
     }
   `;
 
