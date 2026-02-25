@@ -36,7 +36,8 @@ function App() {
     div,
     p,
     a,
-    button {
+    button,
+    input {
       font-family: OngleipParkDahyeon;
     }
 

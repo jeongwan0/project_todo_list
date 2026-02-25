@@ -4,6 +4,8 @@ import * as s from "./styles";
 import { css } from "@emotion/react";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import ModalStore from "../../stores/modalStore";
 
 export default function MainPage() {
   console.log("MainPage.jsx 들어옴");
@@ -19,6 +21,7 @@ export default function MainPage() {
   }, [currentYear, currentMonth]);
   const [days, setDays] = useState([]);
   const [dDay, setDDay] = useState(new Date(currentYear + 1, 0, 1));
+  const [isModalOpened, setIsModalOpened] = useState(false)
 
   const dDayCalc = (today, dday) => {
     const todayDate = new Date(
@@ -52,21 +55,26 @@ export default function MainPage() {
     setDays(newDays);
   }, [currentYear, currentMonth]);
 
+  const ckbxTodo = (content, id) => {
+    return (
+      <div css={s.ckbxTodo}>
+        <input type="checkbox" id={id} css={s.ckbx} />
+        <label htmlFor={id}>{content}</label>
+      </div>
+    )
+  }
+
   const calendar = () => {
     return Array.from({ length: 5 }, (_, w) => (
       <tr key={w} css={s.week}>
         {Array.from({ length: 7 }, (_, d) => (
-          <td key={w * 7 + d + 1} css={[s.date, s.hover]}>
+          <td key={w * 7 + d + 1} css={[s.date, s.hover]} onClick={detailClickHandler}>
             <div css={s.tdDate}>{days[w * 7 + d] ?? "\u00A0"}</div>
             {days[w * 7 + d] !== null && (
               <div css={s.tdCkbx}>
                 <div css={s.ckbxTodo}>
-                  <input type="checkbox" id="1" css={s.ckbx} />
-                  <label htmlFor="1">할일1</label>
-                </div>
-                <div css={s.ckbxTodo}>
-                  <input type="checkbox" id="2" css={s.ckbx} />
-                  <label htmlFor="2">할일2</label>
+                  <input type="checkbox" id="1" css={s.ckbx} onClick={(e) => e.stopPropagation()}/>
+                  <label htmlFor="1" onClick={(e) => e.stopPropagation()}>할일1</label>
                 </div>
               </div>
             )}
@@ -99,8 +107,14 @@ export default function MainPage() {
     setCurrentMonth(today.getMonth() + 1);
   };
 
+  const detailClickHandler = () => {
+    setIsModalOpened(true);
+    console.log("true로 변경됨!")
+  }
+
   return (
     <>
+      <ModalStore isModalOpened={isModalOpened}/>
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
           <div css={s.leftDiv}>
