@@ -12,17 +12,20 @@ function App() {
       box-sizing: border-box;
     }
 
+    html,
     body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      overflow-y: auto;
     }
 
     #root {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
+      width: 100%;
+      min-height: 100vh;
     }
 
     @font-face {
@@ -41,8 +44,14 @@ function App() {
       font-family: OngleipParkDahyeon;
     }
 
-    html {
-      scrollbar-gutter: stable;
+    td,
+    th {
+      box-sizing: border-box;
+    }
+
+    table {
+      table-layout: fixed;
+      border-collapse: collapse;
     }
   `;
 
