@@ -42,6 +42,7 @@ function App() {
     button,
     input {
       font-family: OngleipParkDahyeon;
+      color: #111;
     }
 
     td,

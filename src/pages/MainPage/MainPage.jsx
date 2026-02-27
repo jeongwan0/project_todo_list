@@ -20,6 +20,7 @@ export default function MainPage() {
   const [days, setDays] = useState([]);
   const [dDay, setDDay] = useState(new Date(currentYear + 1, 0, 1));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(0);
 
   const dDayCalc = (today, dday) => {
     const todayDate = new Date(
@@ -55,15 +56,6 @@ export default function MainPage() {
     setDays(newDays);
   }, [currentYear, currentMonth]);
 
-  const ckbxTodo = (content, id) => {
-    return (
-      <div css={s.ckbxTodo}>
-        <input type="checkbox" id={id} css={s.ckbx} />
-        <label htmlFor={id}>{content}</label>
-      </div>
-    );
-  };
-
   const backClickHandler = () => {
     if (currentMonth - 1 == 0) {
       setCurrentMonth(12);
@@ -97,8 +89,12 @@ export default function MainPage() {
           return (
             <td
               key={index + 1}
-              css={!!days[index] ? [s.date, s.hover] : [s.date, s.disabled]}
-              onClick={() => days[index] != null && setIsModalOpen(true)}
+              css={!days[index] ? [s.date, s.disabled] : [s.date, s.hover]}
+              onClick={() => {
+                if (days[index] != null) {
+                  setIsModalOpen(true);
+                  setSelectedDay(days[index]);
+                }}}
             >
               <div
                 css={s.tdDate}
@@ -138,20 +134,21 @@ export default function MainPage() {
     return (
       <>
         {isModalOpen && (
-          <button
+          <div
             css={s.cardBackground}
             onClick={() => {
               setIsModalOpen(false);
             }}
           >
             <div css={s.cardDiv} onClick={(e) => e.stopPropagation()}>
+              <div css={s.cardDate}>{currentYear}.{currentMonth}.{selectedDay}</div>
               <div css={s.cardSearch}>
                 <input
                   type="text"
                   css={s.cardInput}
                   placeholder="검색어를 입력하세요"
                 />
-                <button css={s.cardBtn}>
+                <button css={s.cardSearchBtn}>
                   <AiOutlineSearch size={"24px"} />
                 </button>
               </div>
@@ -198,7 +195,7 @@ export default function MainPage() {
                 </button>
               </div>
             </div>
-          </button>
+          </div>
         )}
       </>
     );
@@ -210,15 +207,12 @@ export default function MainPage() {
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
           <div css={s.leftDiv}>
-            <button css={s.btn} onClick={thisMonthClickHandler}>
-              이번달로
-            </button>
           </div>
           <div css={s.midDiv}>
             <button css={s.arrowBtn} onClick={backClickHandler}>
               <MdKeyboardArrowLeft />
             </button>
-            {currentYear}.{currentMonth}
+            <button css={s.midDate} onClick={thisMonthClickHandler}>{currentYear}.{currentMonth}</button>
             <button css={s.arrowBtn} onClick={nextClickHandler}>
               <MdKeyboardArrowRight />
             </button>
@@ -227,7 +221,7 @@ export default function MainPage() {
         </div>
         <div css={s.calendarDiv}>
           <table css={s.calendar}>
-            <thead css={s.thead}>
+            <thead>
               <tr css={s.week}>
                 {weeks.map((week) => {
                   return (

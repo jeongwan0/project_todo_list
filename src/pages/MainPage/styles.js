@@ -17,7 +17,6 @@ export const dateDiv = css`
 export const calendarDiv = css`
   width: 100%;
   height: 200%;
-  border: 1px solid black;
   background-color: beige;
 `;
 
@@ -45,8 +44,16 @@ export const midDiv = css`
   display: flex;
   justify-content: space-evenly;
   align-items: end;
-  font-size: 50px;
 `;
+
+export const midDate = css`
+  width: auto;
+  height: 100%;
+  background: transparent;
+  font-size: 50px;
+  border: none;
+  cursor: pointer;
+`
 
 export const btn = css`
   display: flex;
@@ -80,7 +87,6 @@ export const calendar = css`
 
 export const week = css`
   background-color: white;
-  border: 0.5px solid black;
   text-align: center;
   font-size: 20px;
   height: 50px;
@@ -88,16 +94,14 @@ export const week = css`
 
 export const weeks = (weeksLength) => css`
   background-color: white;
-  border: 0.5px solid black;
   text-align: center;
   font-size: 20px;
-
   height: ${weeksLength === 4 ? "25%" : weeksLength === 5 ? "20%" : "16.6667%"};
 `;
 
 export const date = css`
   background-color: white;
-  border: 0.5px solid black;
+  border: 0.5px solid #555;
   text-align: center;
   font-size: 20px;
   padding: 0;
@@ -157,6 +161,15 @@ export const cardDiv = css`
   background-color: white;
 `;
 
+export const cardDate = css`
+  width: 100%;
+  height: 10%;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  font-size: 30px;
+`
+
 export const cardSearch = css`
   width: 100%;
   height: 10%;
@@ -166,8 +179,8 @@ export const cardSearch = css`
 `;
 
 export const cardInput = css`
-  width: 90%;
-  height: 70%;
+  flex: 1;
+  height: 60%;
   border: none;
   background-color: white;
   padding: 0px 10px;
@@ -176,8 +189,8 @@ export const cardInput = css`
   font-size: 16px;
 `;
 
-export const cardBtn = css`
-  height: 70%;
+export const cardSearchBtn = css`
+  height: 60%;
   aspect-ratio: 1;
   border: 1px solid #111;
   display: flex;
@@ -192,7 +205,7 @@ export const cardBtn = css`
 
 export const cardTodos = css`
   width: 100%;
-  height: 80%;
+  height: 70%;
   padding: 10px;
 `;
 

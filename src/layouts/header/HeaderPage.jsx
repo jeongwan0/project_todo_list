@@ -13,6 +13,10 @@ export default function HeaderPage() {
     navigate("/");
   };
 
+  const handleLoginClick = () => {
+    navigate("/login")
+  }
+
   return (
     <header css={s.header}>
       <div css={s.innerDiv}>
@@ -22,7 +26,7 @@ export default function HeaderPage() {
           </button>
         </div>
         <div css={s.profileDiv}>
-          <button css={s.btn}>
+          <button css={s.btn} onClick={handleLoginClick}>
             <AiOutlineUser size="35" />
           </button>
         </div>
