@@ -36,6 +36,7 @@ export const idpwDiv = css`
   justify-content: center;
   align-items: center;
   gap: 10px;
+  position: relative;
 `
 
 export const idpwText = css`
@@ -60,6 +61,20 @@ export const idpwInput = css`
     outline: none;
   }
 `;
+
+export const idpwBtn = css`
+  aspect-ratio: 1 / 1;
+  height: 40%;
+  position: absolute;
+  right: 0px;
+  background-color: rgb(255, 255, 255, 0);
+  border: none;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`
 
 export const btnDiv = css`
   width: 100%;
