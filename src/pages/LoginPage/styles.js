@@ -7,8 +7,7 @@ export const mainDiv = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid rgb(85, 85, 85, 0.5);
-`
+`;
 
 export const titleDiv = css`
   width: 100%;
@@ -17,7 +16,7 @@ export const titleDiv = css`
   justify-content: center;
   align-items: end;
   font-size: 35px;
-`
+`;
 
 export const inputDiv = css`
   width: 100%;
@@ -26,10 +25,10 @@ export const inputDiv = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
+`;
 
 export const idpwDiv = css`
-  width: 90%;
+  width: 50%;
   height: 30%;
   display: grid;
   grid-template-columns: 48px 1fr;
@@ -37,17 +36,17 @@ export const idpwDiv = css`
   align-items: center;
   gap: 10px;
   position: relative;
-`
+`;
 
 export const idpwText = css`
   margin: 0;
   text-align: right;
   justify-content: end;
-  align-items:center;
+  align-items: center;
   margin-right: 10px;
   font-size: 24px;
   cursor: text;
-`
+`;
 
 export const idpwInput = css`
   width: 100%;
@@ -74,15 +73,15 @@ export const idpwBtn = css`
   justify-content: center;
   align-items: center;
   cursor: pointer;
-`
+`;
 
 export const btnDiv = css`
-  width: 100%;
+  width: 80%;
   height: 20%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-`
+`;
 
 export const logsigninBtn = css`
   width: 25%;
@@ -90,7 +89,7 @@ export const logsigninBtn = css`
   font-size: 20px;
   background-color: white;
   border: 1px solid rgb(85, 85, 85, 0.5);
-`
+`;
 
 export const hover = css`
   &:hover {

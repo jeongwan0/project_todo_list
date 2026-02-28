@@ -12,3 +12,7 @@ npm install react-icons
 < 초기 설정 - 확장자 >
 ES7+ React/Redux/React-Native snippets
 vscode-styled-components
+ms-teme
+Prettier - Code formatter
+Code Runner
+indent-rainbow
