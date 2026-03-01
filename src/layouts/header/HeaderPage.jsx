@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function HeaderPage() {
   console.log("HeaderPage.jsx 들어옴");
   const navigate = useNavigate();
-  const user = useUserStore((s) => s.user);
+  const user = useUserStore((s) => s.user?.user);
   const isLogin = !!user;
 
   const handleLogoClick = () => {

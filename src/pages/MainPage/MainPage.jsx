@@ -4,6 +4,7 @@ import * as s from "./styles";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
+import { dDayCalc } from "../../hooks/dDayCalc";
 
 export default function MainPage() {
   console.log("MainPage.jsx 들어옴");
@@ -21,24 +22,6 @@ export default function MainPage() {
   const [dDay, setDDay] = useState(new Date(currentYear + 1, 0, 1));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
-
-  const dDayCalc = (today, dday) => {
-    const todayDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-    );
-
-    const ddayDate = new Date(
-      dday.getFullYear(),
-      dday.getMonth(),
-      dday.getDate(),
-    );
-
-    let gap = ddayDate.getTime() - todayDate.getTime();
-    let result = Math.floor(gap / (1000 * 60 * 60 * 24));
-    return result;
-  };
 
   useEffect(() => {
     let newDays = [];
@@ -94,7 +77,8 @@ export default function MainPage() {
                 if (days[index] != null) {
                   setIsModalOpen(true);
                   setSelectedDay(days[index]);
-                }}}
+                }
+              }}
             >
               <div
                 css={s.tdDate}
@@ -141,7 +125,9 @@ export default function MainPage() {
             }}
           >
             <div css={s.cardDiv} onClick={(e) => e.stopPropagation()}>
-              <div css={s.cardDate}>{currentYear}.{currentMonth}.{selectedDay}</div>
+              <div css={s.cardDate}>
+                {currentYear}.{currentMonth}.{selectedDay}
+              </div>
               <div css={s.cardSearch}>
                 <input
                   type="text"
@@ -206,13 +192,14 @@ export default function MainPage() {
       {Modal(isModalOpen)}
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
-          <div css={s.leftDiv}>
-          </div>
+          <div css={s.leftDiv}></div>
           <div css={s.midDiv}>
             <button css={s.arrowBtn} onClick={backClickHandler}>
               <MdKeyboardArrowLeft />
             </button>
-            <button css={s.midDate} onClick={thisMonthClickHandler}>{currentYear}.{currentMonth}</button>
+            <button css={s.midDate} onClick={thisMonthClickHandler}>
+              {currentYear}.{currentMonth}
+            </button>
             <button css={s.arrowBtn} onClick={nextClickHandler}>
               <MdKeyboardArrowRight />
             </button>
