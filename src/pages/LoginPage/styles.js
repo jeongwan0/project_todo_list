@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 // /** @jsxImportSource @emotion/react */
 
 export const mainDiv = css`
-  width: 70%;
+  width: 560px;
   height: 70%;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@ export const titleDiv = css`
 
 export const inputDiv = css`
   width: 100%;
-  height: 60%;
+  height: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,7 +28,7 @@ export const inputDiv = css`
 `;
 
 export const idpwDiv = css`
-  width: 50%;
+  width: 100%;
   height: 30%;
   display: grid;
   grid-template-columns: 48px 1fr;
@@ -50,7 +50,7 @@ export const idpwText = css`
 
 export const idpwInput = css`
   width: 100%;
-  height: 40%;
+  height: 50%;
   padding-left: 5px;
   color: black;
   display: flex;
@@ -76,15 +76,15 @@ export const idpwBtn = css`
 `;
 
 export const btnDiv = css`
-  width: 80%;
+  width: 100%;
   height: 20%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
 `;
 
 export const logsigninBtn = css`
-  width: 25%;
+  width: 30%;
   height: 40%;
   font-size: 20px;
   background-color: white;
