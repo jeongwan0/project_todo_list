@@ -13,9 +13,9 @@ export default function myPage() {
   const nickname = user.nickname;
   const id = user.id;
   const pw = user.pw;
-  const ddayName = user.dday[0];
-  const ddayDate = user.dday[1];
-  const ddayNum = user.dday[2];
+  const ddayName = user.ddayname;
+  const ddayDate = user.ddaydate;
+  const ddayNum = user.ddaynum;
 
   const ddayCalc = (ddayDate) => {
     return dDayCalc(new Date(), ddayToDate(ddayDate));
