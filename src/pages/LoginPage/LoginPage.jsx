@@ -4,72 +4,18 @@ import { useUserStore } from "../../stores/useUserStore";
 import * as s from "./styles";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { dDayCalc } from "../../hooks/dDayCalc";
 
 export default function LoginPage() {
   const [idInputVal, setIdInputVal] = useState("");
   const [pwInputVal, setPwInputVal] = useState("");
   const [pwToggle, setPwToggle] = useState(false);
   const navigate = useNavigate();
-  const user = useUserStore((s) => s.user?.user);
   const setUser = useUserStore((s) => s.setUser);
-  const [users, setUsers] = useState([
-    {
-      index: 1,
-      nickname: "민지",
-      id: "minji_01",
-      pw: "Minji$2026",
-      ddayname: "중간고사",
-      ddaydate: 20260425,
-      ddaynum: 55,
-    },
-    {
-      index: 2,
-      nickname: "서준",
-      id: "seojun_02",
-      pw: "Seojun!88",
-      ddayname: "기말고사",
-      ddaydate: 20260710,
-      ddaynum: 131,
-    },
-    {
-      index: 3,
-      nickname: "지우",
-      id: "jiwoo_03",
-      pw: "Jiwoo@741",
-      ddayname: "모의고사",
-      ddaydate: 20260514,
-      ddaynum: 74,
-    },
-    {
-      index: 4,
-      nickname: "하린",
-      id: "harin_04",
-      pw: "Harin$3x9",
-      ddayname: "개학",
-      ddaydate: 2060302,
-      ddaynum: 1,
-    },
-    {
-      index: 5,
-      nickname: "도윤",
-      id: "doyoon_05",
-      pw: "Doyoon%17",
-      ddayname: "수능",
-      ddaydate: 261112,
-      ddaynum: 256,
-    },
-    {
-      index: 6,
-      nickname: "정완",
-      id: "jeongwan0",
-      pw: "kjy0401!",
-      ddayname: "수행평가",
-      ddaydate: 20260320,
-      ddaynum: 29,
-    },
-  ]);
+  const addUser = useUserStore((s) => s.addUser);
+  const users = useUserStore((s) => s.users);
 
-  const loginClickHandler = () => {
+  const signinClickHandler = () => {
     const user = users.find((u) => u.id === idInputVal && u.pw === pwInputVal);
 
     if (!user) {
@@ -80,47 +26,54 @@ export default function LoginPage() {
     setIdInputVal("");
     setPwInputVal("");
     alert(`${user.nickname}님, 반갑습니다.`);
-    setUser({ user });
+    setUser(user);
     navigate("/");
   };
 
-  const signinClickHandler = () => {
-    const user = users.find((u) => u.id === idInputVal);
-    const emailRegEx = /^([a-z0-9_\.-]+)@([\da-z-]+)\.([a-z\.]{2,6})$/;
+  const signupClickHandler = () => {
+    console.log(users)
+    const exist = users.find((u) => u.id === idInputVal);
+    const pwRegEx = /^(?=.*[a-z])(?=.*[!@#$%^*+=-]).{8,}$/;
+    const nextIndex = users.length === 0 ? 1 : Math.max(...users.map((u) => u.index ?? 0)) + 1;
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const newYear = new Date(currentYear + 1, 0, 1);
+    const ddayYear = newYear.getFullYear().toString();
+    const ddayDate = ddayYear + "01" + "01";
+    const ddayNum = dDayCalc(today, newYear);
 
-    // { index: 6, nickname: "예준", id: "yejun_06", pw: "Yejun529" }
+    // { index: 6, nickname: "예준", id: "yejun_06", pw: "Yejun529!" }
 
     if (!idInputVal) {
       alert("ID는 빈 값일 수 없습니다");
       return;
     }
 
-    if (user) {
+    if (exist) {
       alert("이미 사용중인 ID 입니다");
       return;
     }
 
-    if (String(pwInputVal).length < 8) {
-      alert("비밀번호는 8자 이상이어야 합니다");
+    if (!pwRegEx.test(pwInputVal)) {
+      alert("비밀번호는 8자 이상이고 특수문자를 포함하여야 합니다.");
       return;
     }
 
-    if (!emailRegEx.test(pwInputVal)) {
-      alert("비밀번호는 특수문자를 포함하여야 합니다");
-      return;
-    }
+    addUser({
+      index: nextIndex,
+      nickname: idInputVal,
+      id: idInputVal,
+      pw: pwInputVal,
+      ddayname: "신년",
+      ddaydate: ddayDate,
+      ddaynum: ddayNum,
+    })
 
-    setUsers((prev) => [
-      ...prev,
-      {
-        index: 7,
-        nickname: { idInputVal },
-        id: { idInputVal },
-        pw: { pwInputVal },
-      },
-    ]);
 
+    setIdInputVal("");
+    setPwInputVal("");
     alert("회원가입이 완료되었습니다!");
+    console.log(users)
   };
 
   const idInputChageHandler = (e) => {
@@ -174,10 +127,10 @@ export default function LoginPage() {
           </div>
         </div>
         <div css={s.btnDiv}>
-          <button css={[s.logsigninBtn, s.hover]} onClick={loginClickHandler}>
+          <button css={[s.logsigninBtn, s.hover]} onClick={signinClickHandler}>
             로그인
           </button>
-          <button css={[s.logsigninBtn, s.hover]} onClick={signinClickHandler}>
+          <button css={[s.logsigninBtn, s.hover]} onClick={signupClickHandler}>
             회원가입
           </button>
         </div>

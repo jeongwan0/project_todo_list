@@ -5,6 +5,10 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
 import { dDayCalc } from "../../hooks/dDayCalc";
+import Calendar from "./components/Calender/Calender";
+import CalenderModal from "./components/Modal/CalenderModal";
+import { monthTodo } from "./hooks/useCalender";
+import { useUserStore } from "../../stores/useUserStore";
 
 export default function MainPage() {
   console.log("MainPage.jsx 들어옴");
@@ -19,9 +23,11 @@ export default function MainPage() {
     return new Date(currentYear, currentMonth - 1, 1).getDay();
   }, [currentYear, currentMonth]);
   const [days, setDays] = useState([]);
-  const [dDay, setDDay] = useState(new Date(currentYear + 1, 0, 1));
+  const dDay = useMemo(() => new Date(currentYear + 1, 0, 1), [currentYear]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
+  const user = useUserStore((s) => s.user)
+  const monthTodos = monthTodo(currentYear, currentMonth, user?.id);
 
   useEffect(() => {
     let newDays = [];
@@ -31,8 +37,6 @@ export default function MainPage() {
     for (let day = 0; day < lastDate; day++) {
       newDays.push(day + 1);
     }
-    // const needWeeks = Math.max(4, Math.ceil(newDays.length / 7));
-    // const totalCells = Math.min(6, needWeeks) * 7;
 
     while (newDays.length < 42) newDays.push(null);
 
@@ -62,134 +66,11 @@ export default function MainPage() {
     setCurrentMonth(today.getMonth() + 1);
   };
 
-  const calendar = () => {
-    const weeksLength = days.length / 7;
-    return Array.from({ length: 6 }, (_, w) => (
-      <tr key={w} css={s.weeks(weeksLength)}>
-        {Array.from({ length: 7 }, (_, d) => {
-          const index = w * 7 + d;
-
-          return (
-            <td
-              key={index + 1}
-              css={!days[index] ? [s.date, s.disabled] : [s.date, s.hover]}
-              onClick={() => {
-                if (days[index] != null) {
-                  setIsModalOpen(true);
-                  setSelectedDay(days[index]);
-                }
-              }}
-            >
-              <div
-                css={s.tdDate}
-                style={{
-                  visibility: days[index] != null ? "visible" : "hidden",
-                }}
-              >
-                {days[index]}
-              </div>
-
-              <div
-                css={s.tdCkbx}
-                style={{
-                  visibility: days[index] != null ? "visible" : "hidden",
-                }}
-              >
-                <div css={s.ckbxTodo}>
-                  <input
-                    type="checkbox"
-                    id={index}
-                    css={s.ckbx}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <label htmlFor={index} onClick={(e) => e.stopPropagation()}>
-                    할일{days[index] ?? "\u00A0"}
-                  </label>
-                </div>
-              </div>
-            </td>
-          );
-        })}
-      </tr>
-    ));
-  };
-
-  const Modal = (isModalOpen) => {
-    return (
-      <>
-        {isModalOpen && (
-          <div
-            css={s.cardBackground}
-            onClick={() => {
-              setIsModalOpen(false);
-            }}
-          >
-            <div css={s.cardDiv} onClick={(e) => e.stopPropagation()}>
-              <div css={s.cardDate}>
-                {currentYear}.{currentMonth}.{selectedDay}
-              </div>
-              <div css={s.cardSearch}>
-                <input
-                  type="text"
-                  css={s.cardInput}
-                  placeholder="검색어를 입력하세요"
-                />
-                <button css={s.cardSearchBtn}>
-                  <AiOutlineSearch size={"24px"} />
-                </button>
-              </div>
-              <div css={s.cardTodos}>
-                <div css={s.ckbxDiv}>
-                  <input
-                    type="checkbox"
-                    id="1"
-                    css={s.ckbxInput}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <label
-                    htmlFor="1"
-                    css={s.ckbxLabel}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    할일1
-                  </label>
-                </div>
-                <div css={s.ckbxDiv}>
-                  <input
-                    type="checkbox"
-                    id="2"
-                    css={s.ckbxInput}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <label
-                    htmlFor="2"
-                    css={s.ckbxLabel}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    할일2
-                  </label>
-                </div>
-              </div>
-              <div css={s.cardBtm}>
-                <button
-                  css={[s.cardCloseBtn, s.hover]}
-                  onClick={() => {
-                    setIsModalOpen(false);
-                  }}
-                >
-                  닫기
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </>
-    );
-  };
+  console.log(monthTodos)
 
   return (
     <>
-      {Modal(isModalOpen)}
+      <CalenderModal date={{currentYear, currentMonth, selectedDay}} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
           <div css={s.leftDiv}></div>
@@ -219,7 +100,9 @@ export default function MainPage() {
                 })}
               </tr>
             </thead>
-            <tbody css={s.tbody}>{calendar()}</tbody>
+            <tbody css={s.tbody}>
+              <Calendar days={days} setIsModalOpen={setIsModalOpen} setSelectedDay={setSelectedDay} monthTodos={monthTodos} currentYear={currentYear} currentMonth={currentMonth} />
+            </tbody>
           </table>
         </div>
       </div>

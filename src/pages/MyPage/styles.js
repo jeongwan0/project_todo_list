@@ -140,4 +140,10 @@ export const marginLeft = css`
 
 export const deleteUserDiv = css`
   border: none;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 40px 1fr 160px;
+  border-bottom: 1px solid #666;
 `;

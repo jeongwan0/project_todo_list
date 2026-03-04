@@ -5,11 +5,15 @@ import * as s from "./styles";
 import { AiOutlineUser, AiOutlineUserDelete } from "react-icons/ai";
 import { TbLockPassword, TbCalendarCog } from "react-icons/tb";
 import { dDayCalc } from "../../hooks/dDayCalc";
+import { useNavigate } from "react-router-dom";
 
-export default function myPage() {
-  const user = useUserStore((s) => s.user?.user);
+export default function MyPage() {
+  const navigate = useNavigate();
+  const user = useUserStore((s) => s.user);
+  const users = useUserStore((s) => s.users);
   const updateUser = useUserStore((s) => s.updateUser);
-  const [isLogin, setIsLogin] = useState(!!user);
+  const logoutUser = useUserStore((s) => s.clearUser);
+  const deleteUser = useUserStore((s) => s.deleteUser);
   const nickname = user.nickname;
   const id = user.id;
   const pw = user.pw;
@@ -17,8 +21,16 @@ export default function myPage() {
   const ddayDate = user.ddaydate;
   const ddayNum = user.ddaynum;
 
+  const ddayDateToDate = (n) => {
+    const string = String(n);
+    const y = Number(string.slice(0, 4));
+    const m = Number(string.slice(4, 6));
+    const d = Number(string.slice(6, 8));
+    return new Date(y, m - 1, d);
+  };
+  
   const ddayCalc = (ddayDate) => {
-    return dDayCalc(new Date(), ddayToDate(ddayDate));
+    return dDayCalc(new Date(), ddayDateToDate(ddayDate));
   };
 
   const [inputVal, setInputVal] = useState({
@@ -27,19 +39,14 @@ export default function myPage() {
     ddayname: ddayName,
     ddaydate: ddayDate,
   });
+
   const [changeBtnClick, setChangeBtnClick] = useState({
     nickname: false,
     pw: false,
     ddayname: false,
     ddaydate: false,
   });
-  const ddayToDate = (n) => {
-    const string = String(n);
-    const y = Number(string.slice(0, 4));
-    const m = Number(string.slice(4, 6));
-    const d = Number(string.slice(6, 8));
-    return new Date(y, m - 1, d);
-  };
+
 
   const handleChangeInput = (e) => {
     const { id, value } = e.target;
@@ -49,21 +56,38 @@ export default function myPage() {
   const handleChangeBtn = (e) => {
     const id = e.target.id;
 
-    // if (changeBtnClick[id]) {
-    //   if (id === "ddayname" || id === "ddaydate") {
-    //     const newName = id === "ddayname" ? inputVal.ddayname : ddayName;
-    //     const newDate =
-    //       id === "ddaydate" ? Number(inputVal.ddaydate) : ddayDate;
-    //     updateUser({
-    //       dday: [newName, newDate, ddayCalc(new Date(), ddayToDate(newDate))],
-    //     });
-    //   } else {
-    //     updateUser({ [id]: inputVal[id] });
-    //   }
-    // }
+    if (changeBtnClick[id]) {
+      if (id === "ddayname" || id === "ddaydate") {
+        const newName = id === "ddayname" ? inputVal.ddayname : ddayName;
+        const newDate =
+          id === "ddaydate" ? String(inputVal.ddaydate) : ddayDate;
+        updateUser({
+          ddayname: newName,
+          ddaydate: newDate,
+          ddaynum: ddayCalc(newDate),
+        });
+      } else {
+        updateUser({ [id]: inputVal[id] });
+      }
+    }
 
     setChangeBtnClick((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  }
+
+  const handleLogoutBtn = () => {
+    logoutUser();
+    console.log(users);
+    navigate("/")
+    alert("로그아웃 되었습니다.")
+  }
+
+  const handleDeleteBtn = () => {
+    deleteUser();
+    logoutUser();
+    console.log(users);
+    navigate("/")
+    alert("탈퇴 되었습니다.")
+  }
 
   return (
     <>
@@ -166,9 +190,10 @@ export default function myPage() {
             <div css={s.content1}>
               <AiOutlineUserDelete />
             </div>
-            <div css={s.content2}>회원탈퇴</div>
+            <div css={s.content2}>로그아웃 / 회원탈퇴</div>
             <div css={s.content3}>
-              <button css={s.changeBtn}>탈퇴</button>
+              <button css={s.changeBtn} onClick={handleLogoutBtn}>로그아웃</button>
+              <button css={[s.changeBtn, s.marginLeft]} onClick={handleDeleteBtn}>회원탈퇴</button>
             </div>
           </div>
         </div>
