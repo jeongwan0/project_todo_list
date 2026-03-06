@@ -124,6 +124,11 @@ export const tdDate = css`
   font-size: 25px;
 `;
 
+export const ckbxTodo = css`
+  height: 20px;
+  overflow: hidden;
+`
+
 export const tdCkbx = css`
   display: flex;
   flex-direction: column;

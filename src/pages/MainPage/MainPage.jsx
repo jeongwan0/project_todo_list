@@ -66,8 +66,6 @@ export default function MainPage() {
     setCurrentMonth(today.getMonth() + 1);
   };
 
-  console.log(monthTodos)
-
   return (
     <>
       <CalenderModal date={{currentYear, currentMonth, selectedDay}} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />

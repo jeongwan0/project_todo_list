@@ -189,7 +189,7 @@ export const cardInput = css`
   font-size: 16px;
 `;
 
-export const cardSearchBtn = css`
+export const cardPlusBtn = css`
   height: 60%;
   aspect-ratio: 1;
   border: 1px solid #111;
@@ -216,10 +216,31 @@ export const ckbxDiv = css`
   justify-content: center;
   border: 1px solid #111;
   margin-bottom: 5px;
+  position: relative;
 `;
 
-export const ckbxInput = css`
+export const inputDiv = css`
   height: 100%;
+  width: 10%;
+  display: flex;
+  justify-content: center;
+`;
+
+export const labelDiv = css`
+  flex: 1;
+  display: flex;
+  align-items: center;
+`;
+
+export const btnDiv = css`
+  width: 25%;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+`
+
+export const ckbxInput = css`
   width: 16px;
   cursor: pointer;
 `;
@@ -228,11 +249,28 @@ export const ckbxLabel = css`
   height: 100%;
   width: 90%;
   display: flex;
-  padding-left: 10px;
   font-size: 20px;
   align-items: center;
   cursor: pointer;
 `;
+
+export const ckbxBtn = css`
+  height: 70%;
+  width: 30px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  border: 1px solid black;
+`
+
+export const addInput = css`
+  width: calc(100% - 10px);
+  height: 90%;
+  font-size: 20px;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+`
 
 export const cardBtm = css`
   width: 100%;

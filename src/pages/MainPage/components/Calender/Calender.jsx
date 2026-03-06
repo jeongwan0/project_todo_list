@@ -19,8 +19,6 @@ export default function Calendar({days, setIsModalOpen, setSelectedDay, monthTod
         "0"
       )}`;
 
-    console.log(monthTodos)
-
     return Array.from({ length: 6 }, (_, w) => (
       <tr key={w} css={s.weeks(weeksLength)}>
         {Array.from({ length: 7 }, (_, d) => {
@@ -64,6 +62,7 @@ export default function Calendar({days, setIsModalOpen, setSelectedDay, monthTod
                   />
                   <label
                     htmlFor={todo.id}
+                    css={s.label}
                     onClick={(e) => e.stopPropagation()}
                   >
                     {todo.text}
