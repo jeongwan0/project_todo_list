@@ -3,7 +3,6 @@ import AppRoutes from "./routes/AppRoutes";
 import { css, Global } from "@emotion/react";
 
 function App() {
-  console.log("App.jsx 들어옴");
 
   const globalStyle = css`
     * {
@@ -29,7 +28,7 @@ function App() {
     }
 
     @font-face {
-      font-family: "OngleipParkDahyeon";
+      font-family: "OwnglyphParkDaHyun";
       src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2")
         format("woff2");
       font-weight: normal;
@@ -41,7 +40,7 @@ function App() {
     a,
     button,
     input {
-      font-family: OngleipParkDahyeon;
+      font-family: "OwnglyphParkDaHyun", sans-serif;
       color: #111;
     }
 

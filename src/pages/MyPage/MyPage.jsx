@@ -89,6 +89,16 @@ export default function MyPage() {
     alert("탈퇴 되었습니다.")
   }
 
+  const plusMinus = (ddayNum) => {
+    if (ddayNum > 0) {
+      return `D-${ddayNum}`;
+    } else if (ddayNum === 0) {
+      return "D-DAY"
+    } else {
+      return `D+${-ddayNum}`;
+    }
+  }
+
   return (
     <>
       <div css={s.mainDiv}>
@@ -168,10 +178,11 @@ export default function MyPage() {
                 onChange={handleChangeInput}
                 id="ddaydate"
                 readOnly={!changeBtnClick.ddaydate}
+                maxLength={8}
                 css={s.changeInput}
                 size={Math.max(String(inputVal.ddaydate).length, 1)}
               />
-              : D-{ddayNum}
+              : {plusMinus(ddayNum)}
             </div>
             <div css={s.content3}>
               <button css={s.changeBtn} id="ddayname" onClick={handleChangeBtn}>

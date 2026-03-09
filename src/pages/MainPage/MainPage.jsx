@@ -11,7 +11,6 @@ import { monthTodo } from "./hooks/useCalender";
 import { useUserStore } from "../../stores/useUserStore";
 
 export default function MainPage() {
-  console.log("MainPage.jsx 들어옴");
   const weeks = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -23,10 +22,15 @@ export default function MainPage() {
     return new Date(currentYear, currentMonth - 1, 1).getDay();
   }, [currentYear, currentMonth]);
   const [days, setDays] = useState([]);
-  const dDay = useMemo(() => new Date(currentYear + 1, 0, 1), [currentYear]);
+  const newYearDdayText = "신년"
+  const newYearDdayDate = useMemo(() => new Date(currentYear + 1, 0, 1), [currentYear]);
+  const newYearDdayNum = dDayCalc(today, newYearDdayDate);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
   const user = useUserStore((s) => s.user)
+  const ddayName = user?.ddayname ?? newYearDdayText;
+  const ddayNum = user?.ddaynum ?? newYearDdayNum;
+  const [tick, setTick] = useState(0);
   const monthTodos = monthTodo(currentYear, currentMonth, user?.id);
 
   useEffect(() => {
@@ -66,9 +70,19 @@ export default function MainPage() {
     setCurrentMonth(today.getMonth() + 1);
   };
 
+  const plusMinus = (ddayNum) => {
+    if (ddayNum > 0) {
+      return `D-${ddayNum}`;
+    } else if (ddayNum === 0) {
+      return "D-DAY"
+    } else {
+      return `D+${-ddayNum}`;
+    }
+  }
+
   return (
     <>
-      <CalenderModal date={{currentYear, currentMonth, selectedDay}} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <CalenderModal date={{currentYear, currentMonth, selectedDay}} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setTick={setTick} />
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
           <div css={s.leftDiv}></div>
@@ -83,7 +97,7 @@ export default function MainPage() {
               <MdKeyboardArrowRight />
             </button>
           </div>
-          <div css={s.rightDiv}>신년 D-{dDayCalc(today, dDay)}</div>
+          <div css={s.rightDiv}>{ddayName} {plusMinus(ddayNum)}</div>
         </div>
         <div css={s.calendarDiv}>
           <table css={s.calendar}>
@@ -99,7 +113,7 @@ export default function MainPage() {
               </tr>
             </thead>
             <tbody css={s.tbody}>
-              <Calendar days={days} setIsModalOpen={setIsModalOpen} setSelectedDay={setSelectedDay} monthTodos={monthTodos} currentYear={currentYear} currentMonth={currentMonth} />
+              <Calendar days={days} setIsModalOpen={setIsModalOpen} setSelectedDay={setSelectedDay} monthTodos={monthTodos} currentYear={currentYear} currentMonth={currentMonth} user={user} setTick={setTick} />
             </tbody>
           </table>
         </div>

@@ -1,5 +1,8 @@
+// index, nickname, userId, userPw, profileImg, ddayname, ddaydate, ddaynum
+// dateId, text, isItDone
+
 export const todosDummy = {
-  q: {
+  jeongwan0: {
     "20260302": [
       { id: "jeongwan-20260302-1", text: "새 학기 준비물 체크하기", done: true },
       { id: "jeongwan-20260302-2", text: "시간표 적고 알림 설정하기", done: false },

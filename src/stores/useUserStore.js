@@ -53,8 +53,8 @@ export const useUserStore = create((set) => ({
     {
       index: 6,
       nickname: "정완",
-      id: "q",
-      pw: "q",
+      id: "jeongwan0",
+      pw: "Jeongwan0!",
       ddayname: "수행평가",
       ddaydate: "20260320",
       ddaynum: 29,

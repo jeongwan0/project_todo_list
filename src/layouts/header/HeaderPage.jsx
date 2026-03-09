@@ -8,7 +8,6 @@ import { LuListTodo } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function HeaderPage() {
-  console.log("HeaderPage.jsx 들어옴");
   const navigate = useNavigate();
   const user = useUserStore((s) => s.user);
   const isLogin = !!user;

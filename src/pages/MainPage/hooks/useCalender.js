@@ -44,20 +44,26 @@ export const addTodo = (dateKey, userId, text, isItDone) => {
   return;
 }
 
-export const modifyTodo = (dateKey, userId, text, isItDone) => {
-  if (!userId) return;
+export const modifyTodo = (dateKey, userId, index, text, isItDone) => {
+  if (!userId) return [];
 
-  const prev = todosDummy[userId][dateKey];
+  const todos = todosDummy[userId]?.[dateKey] ?? [];
 
-  todosDummy[userId][dateKey] =  {
-    ...prev,
-    text,
-    done: isItDone,
-  };
+  const newTodos = todos.map((todo, i) =>
+    i === index
+      ? {
+          ...todo,
+          text,
+          done: isItDone,
+        }
+      : todo
+  );
 
-  console.log(todosDummy[userId][dateKey])
+  todosDummy[userId][dateKey] = newTodos;
 
-  return;
+  console.log(todosDummy[userId][dateKey]);
+
+  return newTodos;
 }
 
 export const deleteTodo = (dateKey, userId, index) => {
@@ -71,4 +77,13 @@ export const deleteTodo = (dateKey, userId, index) => {
   console.log(todosDummy[userId][dateKey])
 
   return;
+}
+
+export const toggleTodoDone = (dateKey, userId, index) => {
+  if (!userId) return;
+
+  const todos = todosDummy[userId]?.[dateKey];
+  if (!todos || !todos[index]) return;
+
+  todosDummy[userId][dateKey][index].done = !todosDummy[userId][dateKey][index].done;
 }

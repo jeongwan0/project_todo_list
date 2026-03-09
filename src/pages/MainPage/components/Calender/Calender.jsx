@@ -1,8 +1,9 @@
 // /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 import { useMemo } from "react";
+import { toggleTodoDone } from "../../hooks/useCalender";
 
-export default function Calendar({days, setIsModalOpen, setSelectedDay, monthTodos, currentYear, currentMonth}) {
+export default function Calendar({days, setIsModalOpen, setSelectedDay, monthTodos, currentYear, currentMonth, user, setTick}) {
     const weeksLength = days.length / 7;
 
     const todosByDate = useMemo(() => {
@@ -52,16 +53,22 @@ export default function Calendar({days, setIsModalOpen, setSelectedDay, monthTod
                   visibility: days[index] != null ? "visible" : "hidden",
                 }}
               >
-                {todos.map((todo) => (
+                {todos.map((todo, todoIndex) => (
                 <div css={s.ckbxTodo} key={todo.id}>
                   <input
                     type="checkbox"
-                    id={todo.id}
+                    checked={todo.done}
+                    id={`todo-${todo.id}`}
                     css={s.ckbx}
                     onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      toggleTodoDone(dateKey, user?.id, todoIndex);
+                      setTick((prev) => prev + 1);
+                    }}
                   />
                   <label
-                    htmlFor={todo.id}
+                    htmlFor={`todo-${todo.id}`}
                     css={s.label}
                     onClick={(e) => e.stopPropagation()}
                   >

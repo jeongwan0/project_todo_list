@@ -230,6 +230,7 @@ export const labelDiv = css`
   flex: 1;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
 `;
 
 export const btnDiv = css`
@@ -253,6 +254,18 @@ export const ckbxLabel = css`
   align-items: center;
   cursor: pointer;
 `;
+
+export const modifyInput = css`
+  height: 80%;
+  width: 90%;
+  display: flex;
+  font-size: 20px;
+  align-items: center;
+  cursor: text;
+  border: none;
+  outline: 1px solid black;
+
+`
 
 export const ckbxBtn = css`
   height: 70%;

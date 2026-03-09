@@ -1,14 +1,18 @@
 // /** @jsxImportSource @emotion/react */
 import { AiOutlinePlus } from "react-icons/ai";
 import * as s from "./styles";
-import { dayTodo, addTodo, modifyTodo, deleteTodo } from "../../hooks/useCalender";
+import { dayTodo, addTodo, modifyTodo, deleteTodo, toggleTodoDone } from "../../hooks/useCalender";
 import { useUserStore } from "../../../../stores/useUserStore";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function CalenderModal ({isModalOpen, setIsModalOpen, date }) {
-  const [isAddingTodo, setIsAddingTodo] = useState(false)
+export default function CalenderModal ({ isModalOpen, setIsModalOpen, date, setTick }) {
+  const [isAddingTodo, setIsAddingTodo] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
   const {currentYear, currentMonth, selectedDay} = date;
   const addInputRef = useRef(null);
+  const modifyInputRef = useRef(null);
+  const [searchText, setSearchText] = useState("");
   const selectedDate = `${currentYear}${String(currentMonth).padStart(2, "0")}${String(selectedDay).padStart(
     2,
     "0"
@@ -18,25 +22,76 @@ export default function CalenderModal ({isModalOpen, setIsModalOpen, date }) {
     modifyInput : "",
   })
   const user = useUserStore((s) => s.user)
-  const dayTodos = dayTodo(selectedDate, user?.id);
+  const isLogin = !!user;
+  const dayTodos = isLogin ? dayTodo(selectedDate, user?.id) : [];
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isModalOpen && !isLogin) {
+      alert("로그인 후 이용해 주세요.")
+      navigate("/login");
+    }
+  }, [isModalOpen, isLogin, navigate, setIsModalOpen]);
+
+  useEffect(() => {
+    if (editingIndex !== null) {
+      modifyInputRef.current?.focus();
+    }
+  }, [editingIndex]);
   
   const handleBtnClick = (e) => {
-    const name = e.target.name;
+    const name = e.currentTarget.name;
     const action = e.currentTarget.dataset.action;
+    const checked = e.currentTarget.checked
     if (action === "plus") {
-      setIsAddingTodo((prev) => !prev);
-      requestAnimationFrame(() => addInputRef.current?.focus());
+      setIsAddingTodo((prev) => {
+        const next = !prev;
+        if (next) {
+          requestAnimationFrame(() => addInputRef.current?.focus());
+        }
+        return next;
+      });
+      return;
     }
     if (action === "modify") {
-      console.log("modify", name)
-      // modifyTodo(selectedDate, user?.id, inputVal, false);
+      if (editingIndex === Number(name)) {
+        modifyTodo(
+          selectedDate,
+          user?.id,
+          Number(name),
+          inputVal.modifyInput,
+          checked
+        );
+        setTick((prev) => prev + 1);
+        setEditingIndex(null);
+        setInputVal((prev) => ({
+          ...prev,
+          modifyInput: "",
+        }));
+        return;
+      }
+      setEditingIndex(Number(name));
+      setInputVal((prev) => ({
+        ...prev,
+        modifyInput: dayTodos[Number(name)].text,
+      }));
       return;
     }
     if (action === "delete") {
-      deleteTodo(selectedDate, user?.id, name);
+      const isDelete = window.confirm("정말 삭제하시겠습니까?");
+      if (!isDelete) return;
+
+      deleteTodo(selectedDate, user?.id, Number(name));
+      setTick((prev) => prev + 1);
       return;
     }
   };
+
+  const filteredTodos = dayTodos
+    .map((todo, index) => ({ todo, originalIndex: index }))
+    .filter(({ todo }) =>
+      todo.text.toLowerCase().includes(searchText.toLowerCase())
+    );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,13 +105,19 @@ export default function CalenderModal ({isModalOpen, setIsModalOpen, date }) {
   const activeEnter = (e) => {
     if (e.key !== "Enter" || !e.target.value) return;
     addTodo(selectedDate, user?.id, inputVal.addInput, false);
+    setTick((prev) => prev + 1);
     initialize()
   }
 
   const initialize = () => {
     setIsModalOpen(false);
     setIsAddingTodo(false);
-    setInputVal({ addInput: "" });
+    setEditingIndex(null);
+    setSearchText("");
+    setInputVal({
+      addInput: "",
+      modifyInput: "",
+    });
   }
   
     return (
@@ -75,51 +136,72 @@ export default function CalenderModal ({isModalOpen, setIsModalOpen, date }) {
                   type="text"
                   css={s.cardInput}
                   placeholder="검색어를 입력하세요"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
                 />
                 <button data-action="plus" css={s.cardPlusBtn} onClick={handleBtnClick}>
                   <AiOutlinePlus size={"24px"} />
                 </button>
               </div>
               <div css={s.cardTodos}>
-                {dayTodos.map((todo, index) => (
-                  <div css={s.ckbxDiv} key={`todo-${index}`}>
+                {filteredTodos.map(({ todo, originalIndex }) => (
+                  <div css={s.ckbxDiv} key={todo.id}>
                     <div css={s.inputDiv}>
                       <input
                         type="checkbox"
-                        id={`todo-${index}`}
+                        id={`todo-${todo.id}`}
+                        checked={todo.done}
                         css={s.ckbxInput}
                         onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          toggleTodoDone(selectedDate, user?.id, originalIndex);
+                          setTick((prev) => prev + 1);
+                        }}
                       />
                     </div>
                     <div css={s.labelDiv}>
-                      <label
-                        htmlFor={`todo-${index}`}
-                        css={s.ckbxLabel}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {todo.text}
-                      </label>
-                    <div css={s.btnDiv}>
-                      <button
-                        data-action="modify"
-                        name={index}
-                        onClick={handleBtnClick}
-                        css={s.ckbxBtn}
-                      >
-                        수정
-                      </button>
-                      <button
-                        data-action="delete"
-                        name={index}
-                        onClick={handleBtnClick}
-                        css={s.ckbxBtn}
-                      >
-                        삭제
-                      </button>
+                      {editingIndex === originalIndex ? (
+                        <input
+                          type="text"
+                          id={`todo-${todo.id}`}
+                          name="modifyInput"
+                          css={s.modifyInput}
+                          value={inputVal.modifyInput}
+                          onChange={handleInputChange}
+                          ref={modifyInputRef}
+                        />
+                      ) : (
+                        <label
+                          htmlFor={`todo-${todo.id}`}
+                          css={s.ckbxLabel}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {todo.text}
+                        </label>
+                      )}
+
+                      <div css={s.btnDiv}>
+                        <button
+                          data-action="modify"
+                          name={originalIndex}
+                          onClick={handleBtnClick}
+                          css={s.ckbxBtn}
+                        >
+                          {editingIndex === originalIndex ? "완료" : "수정"}
+                        </button>
+
+                        <button
+                          data-action="delete"
+                          name={originalIndex}
+                          onClick={handleBtnClick}
+                          css={s.ckbxBtn}
+                        >
+                          삭제
+                        </button>
+                      </div>
                     </div>
-                    
-                    </div>
-                  </div>  
+                  </div>
                 ))}
                 {isAddingTodo && (
                   <div css={s.ckbxDiv} key={`todo-add`}>

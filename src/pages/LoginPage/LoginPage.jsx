@@ -33,7 +33,7 @@ export default function LoginPage() {
   const signupClickHandler = () => {
     console.log(users)
     const exist = users.find((u) => u.id === idInputVal);
-    const pwRegEx = /^(?=.*[a-z])(?=.*[!@#$%^*+=-]).{8,}$/;
+    const pwRegEx = /^(?=.*[a-z])(?=.*[^A-Za-z0-9]).{8,}$/;
     const nextIndex = users.length === 0 ? 1 : Math.max(...users.map((u) => u.index ?? 0)) + 1;
     const today = new Date();
     const currentYear = today.getFullYear();
@@ -42,10 +42,8 @@ export default function LoginPage() {
     const ddayDate = ddayYear + "01" + "01";
     const ddayNum = dDayCalc(today, newYear);
 
-    // { index: 6, nickname: "예준", id: "yejun_06", pw: "Yejun529!" }
-
-    if (!idInputVal) {
-      alert("ID는 빈 값일 수 없습니다");
+    if (idInputVal.length < 4 || idInputVal.length > 20) {
+      alert("ID는 4자 이상 20자 이하여야 합니다.")
       return;
     }
 
@@ -101,7 +99,7 @@ export default function LoginPage() {
               type="text"
               value={idInputVal}
               onChange={idInputChageHandler}
-              placeholder="아이디를 입력하세요"
+              placeholder="아이디를 입력하세요 (4자 이상, 20자 이하)"
             />
           </div>
           <div css={s.idpwDiv}>
@@ -118,6 +116,7 @@ export default function LoginPage() {
             />
             <button
               css={s.idpwBtn}
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => {
                 setPwToggle(!pwToggle);
               }}

@@ -6,7 +6,6 @@ import LoginLayout from "../layouts/loginLayout/loginLayout";
 import MyPageLayout from "../layouts/mypageLayout/MyPageLayout";
 
 export default function AppRoutes() {
-  console.log("AppRoutes.jsx 들어옴");
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}></Route>
