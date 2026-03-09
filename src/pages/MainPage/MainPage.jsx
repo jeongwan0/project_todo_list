@@ -5,9 +5,9 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
 import { dDayCalc } from "../../hooks/dDayCalc";
-import Calendar from "./components/Calender/Calender";
-import CalenderModal from "./components/Modal/CalenderModal";
-import { monthTodo } from "./hooks/useCalender";
+import Calendar from "./components/Calendar/Calendar";
+import CalendarModal from "./components/Modal/CalendarModal";
+import { monthTodo } from "./hooks/useCalendar";
 import { useUserStore } from "../../stores/useUserStore";
 
 export default function MainPage() {
@@ -82,7 +82,7 @@ export default function MainPage() {
 
   return (
     <>
-      <CalenderModal date={{currentYear, currentMonth, selectedDay}} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setTick={setTick} />
+      <CalendarModal date={{currentYear, currentMonth, selectedDay}} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setTick={setTick} />
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
           <div css={s.leftDiv}></div>

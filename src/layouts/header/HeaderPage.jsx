@@ -3,7 +3,6 @@ import React from "react";
 import * as s from "./styles";
 import { useUserStore } from "../../stores/useUserStore";
 import { AiOutlineUser } from "react-icons/ai";
-import { AiOutlineLogin } from "react-icons/ai";
 import { LuListTodo } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -30,16 +29,12 @@ export default function HeaderPage() {
       <div css={s.innerDiv}>
         <div css={s.logoDiv}>
           <button css={s.btn} onClick={handleLogoClick}>
-            <LuListTodo size="35" />
+            <LuListTodo size="40" />
           </button>
         </div>
         <div css={s.profileDiv}>
           <button css={s.btn} onClick={handleLoginClick}>
-            {isLogin ? (
-              <AiOutlineUser size="35" />
-            ) : (
-              <AiOutlineLogin size="35" />
-            )}
+            <AiOutlineUser size="40" />
           </button>
         </div>
       </div>

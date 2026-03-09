@@ -76,12 +76,18 @@ export default function LoginPage() {
 
   const idInputChageHandler = (e) => {
     const value = e.target.value;
-    setIdInputVal(value);
+
+    const noKorean = value.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
+
+    setIdInputVal(noKorean);
   };
 
   const pwInputChageHandler = (e) => {
     const value = e.target.value;
-    setPwInputVal(value);
+
+    const noKorean = value.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
+
+    setPwInputVal(noKorean);
   };
 
   return (

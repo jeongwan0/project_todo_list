@@ -1,12 +1,12 @@
 // /** @jsxImportSource @emotion/react */
 import { AiOutlinePlus } from "react-icons/ai";
 import * as s from "./styles";
-import { dayTodo, addTodo, modifyTodo, deleteTodo, toggleTodoDone } from "../../hooks/useCalender";
+import { dayTodo, addTodo, modifyTodo, deleteTodo, toggleTodoDone } from "../../hooks/useCalendar";
 import { useUserStore } from "../../../../stores/useUserStore";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function CalenderModal ({ isModalOpen, setIsModalOpen, date, setTick }) {
+export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setTick }) {
   const [isAddingTodo, setIsAddingTodo] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const {currentYear, currentMonth, selectedDay} = date;

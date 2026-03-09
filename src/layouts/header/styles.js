@@ -28,6 +28,7 @@ export const btn = css`
   height: 100%;
   background-color: white;
   border: none;
+  border-radius: 50%;
 
   &:hover {
     background-color: #eee;
@@ -40,4 +41,5 @@ export const profileDiv = css`
   height: 75%;
   aspect-ratio: 1 / 1;
   border: 1px solid black;
+  border-radius: 50%;
 `;

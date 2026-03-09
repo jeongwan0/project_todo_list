@@ -1,7 +1,7 @@
 // /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 import { useMemo } from "react";
-import { toggleTodoDone } from "../../hooks/useCalender";
+import { toggleTodoDone } from "../../hooks/useCalendar";
 
 export default function Calendar({days, setIsModalOpen, setSelectedDay, monthTodos, currentYear, currentMonth, user, setTick}) {
     const weeksLength = days.length / 7;
