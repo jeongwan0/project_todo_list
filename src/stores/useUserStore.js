@@ -1,65 +1,10 @@
-import React from "react";
 import { create } from "zustand";
+import { usersDummy } from "../data/usersDummy";
 
 export const useUserStore = create((set) => ({
   user : null,
 
-  users: [
-    {
-      index: 1,
-      nickname: "민지",
-      id: "minji_01",
-      pw: "Minji$2026",
-      ddayname: "중간고사",
-      ddaydate: "20260425",
-      ddaynum: 55,
-    },
-    {
-      index: 2,
-      nickname: "서준",
-      id: "seojun_02",
-      pw: "Seojun!88",
-      ddayname: "기말고사",
-      ddaydate: "20260710",
-      ddaynum: 131,
-    },
-    {
-      index: 3,
-      nickname: "지우",
-      id: "jiwoo_03",
-      pw: "Jiwoo@741",
-      ddayname: "모의고사",
-      ddaydate: "20260514",
-      ddaynum: 74,
-    },
-    {
-      index: 4,
-      nickname: "하린",
-      id: "harin_04",
-      pw: "Harin$3x9",
-      ddayname: "개학",
-      ddaydate: "20260302",
-      ddaynum: 1,
-    },
-    {
-      index: 5,
-      nickname: "도윤",
-      id: "doyoon_05",
-      pw: "Doyoon%17",
-      ddayname: "수능",
-      ddaydate: "20261112",
-      ddaynum: 256,
-    },
-    {
-      index: 6,
-      nickname: "정완",
-      id: "jeongwan0",
-      pw: "Jeongwan0!",
-      ddayname: "수행평가",
-      ddaydate: "20260320",
-      ddaynum: 29,
-    },
-  ],
+  users: usersDummy,
 
   setUser: (user) => set({ user }),
 
