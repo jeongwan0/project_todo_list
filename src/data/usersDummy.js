@@ -51,6 +51,6 @@ export const usersDummy = [
     pw: "Jeongwan0!",
     ddayname: "수행평가",
     ddaydate: "20260320",
-    ddaynum: 29,
+    ddaynum: 9,
   },
 ]

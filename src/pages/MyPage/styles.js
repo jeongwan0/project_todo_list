@@ -96,6 +96,7 @@ export const changeInput = css`
   border: 1px solid #000;
   outline: none;
   background: #fff;
+  height: 40%;
 
   &[readonly] {
     background: transparent;
@@ -145,5 +146,4 @@ export const deleteUserDiv = css`
   align-items: center;
   display: grid;
   grid-template-columns: 40px 1fr 160px;
-  border-bottom: 1px solid #666;
 `;

@@ -1,5 +1,5 @@
 // /** @jsxImportSource @emotion/react */
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineCheck } from "react-icons/ai";
 import * as s from "./styles";
 import { dayTodo, addTodo, modifyTodo, deleteTodo, toggleTodoDone } from "../../hooks/useCalendar";
 import { useUserStore } from "../../../../stores/useUserStore";
@@ -20,6 +20,7 @@ export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setT
   const [inputVal, setInputVal] = useState({
     addInput : "",
     modifyInput : "",
+    addDone: false,
   })
   const user = useUserStore((s) => s.user)
   const isLogin = !!user;
@@ -39,11 +40,27 @@ export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setT
     }
   }, [editingIndex]);
   
+  const modalOpenInit = () => {
+    setIsAddingTodo(false);
+    setInputVal((prev) => ({
+      ...prev,
+      addInput: "",
+      addDone: false,
+    }));
+  };
+
   const handleBtnClick = (e) => {
     const name = e.currentTarget.name;
     const action = e.currentTarget.dataset.action;
     const checked = e.currentTarget.checked
+
     if (action === "plus") {
+      if (inputVal.addInput) {
+        addTodo(selectedDate, user?.id, inputVal.addInput, inputVal.addDone);
+        setTick((prev) => prev + 1);
+        modalOpenInit()
+      };
+
       setIsAddingTodo((prev) => {
         const next = !prev;
         if (next) {
@@ -53,6 +70,7 @@ export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setT
       });
       return;
     }
+
     if (action === "modify") {
       if (editingIndex === Number(name)) {
         modifyTodo(
@@ -104,9 +122,10 @@ export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setT
   
   const activeEnter = (e) => {
     if (e.key !== "Enter" || !e.target.value) return;
-    addTodo(selectedDate, user?.id, inputVal.addInput, false);
+
+    addTodo(selectedDate, user?.id, inputVal.addInput, inputVal.addDone);
     setTick((prev) => prev + 1);
-    initialize()
+    modalOpenInit()
   }
 
   const initialize = () => {
@@ -117,6 +136,7 @@ export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setT
     setInputVal({
       addInput: "",
       modifyInput: "",
+      addDone: false,
     });
   }
   
@@ -140,7 +160,7 @@ export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setT
                   onChange={(e) => setSearchText(e.target.value)}
                 />
                 <button data-action="plus" css={s.cardPlusBtn} onClick={handleBtnClick}>
-                  <AiOutlinePlus size={"24px"} />
+                  {isAddingTodo ? <AiOutlineCheck size={"20px"} /> : <AiOutlinePlus size={"24px"} />}
                 </button>
               </div>
               <div css={s.cardTodos}>
@@ -211,6 +231,13 @@ export default function CalendarModal ({ isModalOpen, setIsModalOpen, date, setT
                         id={`todo-add`}
                         css={s.ckbxInput}
                         onClick={(e) => e.stopPropagation()}
+                        checked={inputVal.addDone}
+                        onChange={(e) =>
+                          setInputVal((prev) => ({
+                            ...prev,
+                            addDone: e.target.checked,
+                          }))
+                        }
                       />
                     </div>
                     <div css={s.labelDiv}>

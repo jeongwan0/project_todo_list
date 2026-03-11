@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useUserStore } from "../../stores/useUserStore";
 // /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
@@ -20,6 +20,10 @@ export default function MyPage() {
   const ddayName = user.ddayname;
   const ddayDate = user.ddaydate;
   const ddayNum = user.ddaynum;
+  const nicknameRef = useRef(null);
+  const pwRef = useRef(null);
+  const ddaynameRef = useRef(null);
+  const ddaydateRef = useRef(null);
 
   const ddayDateToDate = (n) => {
     const string = String(n);
@@ -49,12 +53,12 @@ export default function MyPage() {
 
 
   const handleChangeInput = (e) => {
-    const { id, value } = e.target;
+    const { id, value } = e.currentTarget;
     setInputVal((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleChangeBtn = (e) => {
-    const id = e.target.id;
+    const id = e.currentTarget.id;
 
     if (changeBtnClick[id]) {
       if (id === "ddayname" || id === "ddaydate") {
@@ -71,20 +75,34 @@ export default function MyPage() {
       }
     }
 
-    setChangeBtnClick((prev) => ({ ...prev, [id]: !prev[id] }));
+    setChangeBtnClick((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+
+      if (!prev[id]) {
+        requestAnimationFrame(() => {
+          focusInputById(id);
+        });
+      }
+
+      return next;
+    });
   }
 
   const handleLogoutBtn = () => {
     logoutUser();
-    console.log(users);
     navigate("/")
     alert("로그아웃 되었습니다.")
   }
 
   const handleDeleteBtn = () => {
+    const isReal = window.prompt("정말 탈퇴하시겠습니까?\n탈퇴하시려면 '회원 탈퇴'를 정확히 입력하세요.");
+
+    if (isReal != '회원 탈퇴') {
+      return;
+    }
+
     deleteUser();
     logoutUser();
-    console.log(users);
     navigate("/")
     alert("탈퇴 되었습니다.")
   }
@@ -98,6 +116,13 @@ export default function MyPage() {
       return `D+${-ddayNum}`;
     }
   }
+
+  const focusInputById = (id) => {
+    if (id === "nickname") nicknameRef.current?.focus();
+    if (id === "pw") pwRef.current?.focus();
+    if (id === "ddayname") ddaynameRef.current?.focus();
+    if (id === "ddaydate") ddaydateRef.current?.focus();
+  };
 
   return (
     <>
@@ -122,6 +147,7 @@ export default function MyPage() {
             </div>
             <div css={s.content2}>
               <input
+                ref={nicknameRef}
                 type="text"
                 value={inputVal.nickname}
                 onChange={handleChangeInput}
@@ -143,6 +169,7 @@ export default function MyPage() {
             </div>
             <div css={s.content2}>
               <input
+                ref={pwRef}
                 type="text"
                 value={inputVal.pw}
                 onChange={handleChangeInput}
@@ -165,6 +192,7 @@ export default function MyPage() {
             <div css={s.content2}>
               <input
                 type="text"
+                ref={ddaynameRef}
                 value={inputVal.ddayname}
                 onChange={handleChangeInput}
                 id="ddayname"
@@ -173,6 +201,7 @@ export default function MyPage() {
                 size={Math.max(String(inputVal.ddayname).length, 1)}
               />
               <input
+                ref={ddaydateRef}
                 type="text"
                 value={inputVal.ddaydate}
                 onChange={handleChangeInput}
