@@ -33,7 +33,7 @@ export default function HeaderPage() {
           </button>
         </div>
         <div css={s.profileDiv}>
-          <button css={s.btn} onClick={handleLoginClick}>
+          <button css={[s.btn, s.radius50]} onClick={handleLoginClick}>
             <AiOutlineUser size="40" />
           </button>
         </div>

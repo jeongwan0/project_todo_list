@@ -28,13 +28,16 @@ export const btn = css`
   height: 100%;
   background-color: white;
   border: none;
-  border-radius: 50%;
 
   &:hover {
     background-color: #eee;
     cursor: pointer;
   }
 `;
+
+export const radius50 = css`
+  border-radius: 50%;
+`
 
 export const profileDiv = css`
   width: auto;

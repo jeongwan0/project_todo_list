@@ -21,7 +21,6 @@ export default function MainPage() {
   const firstYoil = useMemo(() => {
     return new Date(currentYear, currentMonth - 1, 1).getDay();
   }, [currentYear, currentMonth]);
-  const [days, setDays] = useState([]);
   const newYearDdayText = "신년"
   const newYearDdayDate = useMemo(() => new Date(currentYear + 1, 0, 1), [currentYear]);
   const newYearDdayNum = dDayCalc(today, newYearDdayDate);
@@ -33,19 +32,23 @@ export default function MainPage() {
   const [tick, setTick] = useState(0);
   const monthTodos = monthTodo(currentYear, currentMonth, user?.id);
 
-  useEffect(() => {
+  const days = useMemo(() => {
     let newDays = [];
+
     for (let i = 0; i < firstYoil; i++) {
       newDays.push(null);
     }
-    for (let day = 0; day < lastDate; day++) {
-      newDays.push(day + 1);
+
+    for (let day = 1; day <= lastDate; day++) {
+      newDays.push(day);
     }
 
-    while (newDays.length < 42) newDays.push(null);
+    while (newDays.length < 42) {
+      newDays.push(null);
+    }
 
-    setDays(newDays);
-  }, [currentYear, currentMonth]);
+    return newDays;
+  }, [firstYoil, lastDate]);
 
   const backClickHandler = () => {
     if (currentMonth - 1 == 0) {
