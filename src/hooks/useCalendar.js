@@ -1,4 +1,4 @@
-import { todosDummy } from "../../../data/todosDummy"
+import { todosDummy } from "../data/todosDummy"
 
 export const monthTodo = (currentYear, currentMonth, userId) => {
   if (!userId) return [];

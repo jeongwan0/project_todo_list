@@ -1,6 +1,6 @@
 import React from "react";
 
-export const dDayCalc = (today, dday) => {
+export const useDDayCalc = (today, dday) => {
   const todayDate = new Date(
     today.getFullYear(),
     today.getMonth(),

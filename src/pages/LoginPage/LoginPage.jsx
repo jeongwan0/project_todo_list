@@ -4,7 +4,7 @@ import { useUserStore } from "../../stores/useUserStore";
 import * as s from "./styles";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { dDayCalc } from "../../hooks/dDayCalc";
+import { useDDayCalc } from "../../hooks/useDDayCalc";
 
 export default function LoginPage() {
   const [idInputVal, setIdInputVal] = useState("");
@@ -40,7 +40,7 @@ export default function LoginPage() {
     const newYear = new Date(currentYear + 1, 0, 1);
     const ddayYear = newYear.getFullYear().toString();
     const ddayDate = ddayYear + "01" + "01";
-    const ddayNum = dDayCalc(today, newYear);
+    const ddayNum = useDDayCalc(today, newYear);
 
     if (idInputVal.length < 4 || idInputVal.length > 20) {
       alert("ID는 4자 이상 20자 이하여야 합니다.")

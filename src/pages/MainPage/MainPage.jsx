@@ -4,10 +4,10 @@ import * as s from "./styles";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
-import { dDayCalc } from "../../hooks/dDayCalc";
+import { useDDayCalc } from "../../hooks/useDDayCalc";
 import Calendar from "./components/Calendar/Calendar";
 import CalendarModal from "./components/Modal/CalendarModal";
-import { monthTodo } from "./hooks/useCalendar";
+import { monthTodo } from "../../hooks/useCalendar";
 import { useUserStore } from "../../stores/useUserStore";
 
 export default function MainPage() {
@@ -23,7 +23,7 @@ export default function MainPage() {
   }, [currentYear, currentMonth]);
   const newYearDdayText = "신년"
   const newYearDdayDate = useMemo(() => new Date(currentYear + 1, 0, 1), [currentYear]);
-  const newYearDdayNum = dDayCalc(today, newYearDdayDate);
+  const newYearDdayNum = useDDayCalc(today, newYearDdayDate);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
   const user = useUserStore((s) => s.user)

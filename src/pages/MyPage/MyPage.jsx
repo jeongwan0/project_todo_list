@@ -4,7 +4,7 @@ import { useUserStore } from "../../stores/useUserStore";
 import * as s from "./styles";
 import { AiOutlineUser, AiOutlineUserDelete } from "react-icons/ai";
 import { TbLockPassword, TbCalendarCog } from "react-icons/tb";
-import { dDayCalc } from "../../hooks/dDayCalc";
+import { useDDayCalc } from "../../hooks/useDDayCalc";
 import { useNavigate } from "react-router-dom";
 
 export default function MyPage() {
@@ -34,7 +34,7 @@ export default function MyPage() {
   };
   
   const ddayCalc = (ddayDate) => {
-    return dDayCalc(new Date(), ddayDateToDate(ddayDate));
+    return useDDayCalc(new Date(), ddayDateToDate(ddayDate));
   };
 
   const [inputVal, setInputVal] = useState({
