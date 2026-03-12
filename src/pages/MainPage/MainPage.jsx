@@ -3,7 +3,6 @@ import React, { useMemo, useEffect, useState } from "react";
 import * as s from "./styles";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { AiOutlineSearch } from "react-icons/ai";
 import { useDDayCalc } from "../../hooks/useDDayCalc";
 import Calendar from "./components/Calendar/Calendar";
 import CalendarModal from "./components/Modal/CalendarModal";
@@ -21,16 +20,37 @@ export default function MainPage() {
   const firstYoil = useMemo(() => {
     return new Date(currentYear, currentMonth - 1, 1).getDay();
   }, [currentYear, currentMonth]);
-  const newYearDdayText = "신년"
-  const newYearDdayDate = useMemo(() => new Date(currentYear + 1, 0, 1), [currentYear]);
+  const newYearDdayText = "신년";
+  const newYearDdayDate = useMemo(
+    () => new Date(currentYear + 1, 0, 1),
+    [currentYear],
+  );
   const newYearDdayNum = useDDayCalc(today, newYearDdayDate);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
-  const user = useUserStore((s) => s.user)
+  const user = useUserStore((s) => s.user);
   const ddayName = user?.ddayname ?? newYearDdayText;
   const ddayNum = user?.ddaynum ?? newYearDdayNum;
-  const [tick, setTick] = useState(0);
-  const monthTodos = monthTodo(currentYear, currentMonth, user?.id);
+  const [monthTodos, setMonthTodos] = useState([]);
+
+  const loadMonthTodos = async () => {
+    if (!user?.id) {
+      setMonthTodos([]);
+      return;
+    }
+
+    try {
+      const data = await monthTodo(currentYear, currentMonth, user?.id);
+      setMonthTodos(data);
+    } catch (error) {
+      console.error(error);
+      setMonthTodos([]);
+    }
+  };
+
+  useEffect(() => {
+    loadMonthTodos();
+  }, [currentYear, currentMonth, user?.id]);
 
   const days = useMemo(() => {
     let newDays = [];
@@ -77,15 +97,26 @@ export default function MainPage() {
     if (ddayNum > 0) {
       return `D-${ddayNum}`;
     } else if (ddayNum === 0) {
-      return "D-DAY"
+      return "D-DAY";
     } else {
       return `D+${-ddayNum}`;
     }
-  }
+  };
+
+  const date = {
+    currentYear,
+    currentMonth,
+    selectedDay,
+  };
 
   return (
     <>
-      <CalendarModal date={{currentYear, currentMonth, selectedDay}} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setTick={setTick} />
+      <CalendarModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        date={date}
+        loadMonthTodos={loadMonthTodos}
+      />
       <div css={s.innerDiv}>
         <div css={s.dateDiv}>
           <div css={s.leftDiv}></div>
@@ -100,7 +131,9 @@ export default function MainPage() {
               <MdKeyboardArrowRight />
             </button>
           </div>
-          <div css={s.rightDiv}>{ddayName} {plusMinus(ddayNum)}</div>
+          <div css={s.rightDiv}>
+            {ddayName} {plusMinus(ddayNum)}
+          </div>
         </div>
         <div css={s.calendarDiv}>
           <table css={s.calendar}>
@@ -116,7 +149,15 @@ export default function MainPage() {
               </tr>
             </thead>
             <tbody css={s.tbody}>
-              <Calendar days={days} setIsModalOpen={setIsModalOpen} setSelectedDay={setSelectedDay} monthTodos={monthTodos} currentYear={currentYear} currentMonth={currentMonth} user={user} setTick={setTick} />
+              <Calendar
+                days={days}
+                setIsModalOpen={setIsModalOpen}
+                setSelectedDay={setSelectedDay}
+                monthTodos={monthTodos}
+                currentYear={currentYear}
+                currentMonth={currentMonth}
+                loadMonthTodos={loadMonthTodos}
+              />
             </tbody>
           </table>
         </div>

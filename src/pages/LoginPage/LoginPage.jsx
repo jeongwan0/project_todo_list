@@ -5,6 +5,7 @@ import * as s from "./styles";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDDayCalc } from "../../hooks/useDDayCalc";
+import { loginRequest, signupRequest } from "../../apis/authApi";
 
 export default function LoginPage() {
   const [idInputVal, setIdInputVal] = useState("");
@@ -12,29 +13,37 @@ export default function LoginPage() {
   const [pwToggle, setPwToggle] = useState(false);
   const navigate = useNavigate();
   const setUser = useUserStore((s) => s.setUser);
-  const addUser = useUserStore((s) => s.addUser);
-  const users = useUserStore((s) => s.users);
 
-  const signinClickHandler = () => {
-    const user = users.find((u) => u.id === idInputVal && u.pw === pwInputVal);
-
-    if (!user) {
-      alert("잘못된 ID/PW 입니다.");
+  const signinClickHandler = async () => {
+    if (!idInputVal.trim() || !pwInputVal.trim()) {
+      alert("ID와 PW를 입력해 주세요.");
       return;
     }
 
-    setIdInputVal("");
-    setPwInputVal("");
-    alert(`${user.nickname}님, 반갑습니다.`);
-    setUser(user);
-    navigate("/");
+    try {
+      const loginUser = await loginRequest(idInputVal, pwInputVal);
+
+      const normalizedUser = {
+        id: loginUser.userId,
+        loginId: loginUser.loginId,
+        nickname: loginUser.nickname,
+        message: loginUser.message,
+      };
+
+      setIdInputVal("");
+      setPwInputVal("");
+      setUser(normalizedUser);
+      alert(`${normalizedUser.nickname}님, 반갑습니다.`);
+      console.log("로그인 성공");
+      navigate("/");
+    } catch (error) {
+      alert("잘못된 ID/PW 입니다.");
+      console.error("로그인 실패", error);
+    }
   };
 
-  const signupClickHandler = () => {
-    console.log(users)
-    const exist = users.find((u) => u.id === idInputVal);
+  const signupClickHandler = async () => {
     const pwRegEx = /^(?=.*[a-z])(?=.*[^A-Za-z0-9]).{8,}$/;
-    const nextIndex = users.length === 0 ? 1 : Math.max(...users.map((u) => u.index ?? 0)) + 1;
     const today = new Date();
     const currentYear = today.getFullYear();
     const newYear = new Date(currentYear + 1, 0, 1);
@@ -43,12 +52,7 @@ export default function LoginPage() {
     const ddayNum = useDDayCalc(today, newYear);
 
     if (idInputVal.length < 4 || idInputVal.length > 20) {
-      alert("ID는 4자 이상 20자 이하여야 합니다.")
-      return;
-    }
-
-    if (exist) {
-      alert("이미 사용중인 ID 입니다");
+      alert("ID는 4자 이상 20자 이하여야 합니다.");
       return;
     }
 
@@ -57,21 +61,20 @@ export default function LoginPage() {
       return;
     }
 
-    addUser({
-      index: nextIndex,
-      nickname: idInputVal,
-      id: idInputVal,
-      pw: pwInputVal,
-      ddayname: "신년",
-      ddaydate: ddayDate,
-      ddaynum: ddayNum,
-    })
+    try {
+      await signupRequest({
+        loginId: idInputVal,
+        password: pwInputVal,
+        nickname: idInputVal,
+      });
 
-
-    setIdInputVal("");
-    setPwInputVal("");
-    alert("회원가입이 완료되었습니다!");
-    console.log(users)
+      setIdInputVal("");
+      setPwInputVal("");
+      alert("회원가입이 완료되었습니다!");
+    } catch (error) {
+      alert("회원가입에 실패했습니다.");
+      console.error(error);
+    }
   };
 
   const idInputChageHandler = (e) => {

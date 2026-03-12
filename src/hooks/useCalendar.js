@@ -1,89 +1,60 @@
-import { todosDummy } from "../data/todosDummy"
+import {
+  getTodosByDateRequest,
+  getMonthTodosRequest,
+  addTodoRequest,
+  modifyTodoRequest,
+  deleteTodoRequest,
+  toggleTodoDoneRequest,
+} from "../apis/todoApi";
 
-export const monthTodo = (currentYear, currentMonth, userId) => {
+export const monthTodo = async (currentYear, currentMonth, userId) => {
   if (!userId) return [];
-  const userTodos = todosDummy[userId] ?? {};
-  const ym = `${currentYear}${String(currentMonth).padStart(2, "0")}`;
-  const monthKeys = Object.keys(userTodos).filter((dateKey) =>
-    dateKey.startsWith(ym)
-  );
-  
-  monthKeys.sort();
+  return await getMonthTodosRequest(userId, currentYear, currentMonth);
+};
 
-  const monthTodos = monthKeys.map((dateKey) => ({
-    dateKey,
-    todos: userTodos[dateKey],
-  }))
-  
-  return monthTodos;
-}
-
-export const dayTodo = (selectedDate, userId) => {
+export const dayTodo = async (selectedDate, userId) => {
   if (!userId) return [];
-  const dayTodos = (todosDummy[userId] ?? {})[selectedDate] ?? [];
-  return dayTodos;
-}
+  return await getTodosByDateRequest(userId, selectedDate);
+};
 
-export const addTodo = (dateKey, userId, text, isItDone) => {
-  if (!userId) return;
+export const addTodo = async (selectedDate, userId, content, done = false) => {
+  if (!userId) return null;
 
-  if (!todosDummy[userId][dateKey]) {
-    todosDummy[userId][dateKey] = [];
-  }
-
-  const newTodo = {
-    id: `${userId}-${dateKey}-${Date.now()}`,
-    text,
-    done: isItDone,
+  const todoData = {
+    userId,
+    content,
+    date: selectedDate,
+    done,
   };
 
-  todosDummy[userId][dateKey].push(newTodo);
+  return await addTodoRequest(todoData);
+};
 
-  console.log(todosDummy[userId][dateKey])
+export const modifyTodo = async (
+  todoId,
+  content,
+  done,
+  selectedDate,
+  userId,
+) => {
+  if (!userId || !todoId) return null;
 
-  return;
-}
+  const todoData = {
+    userId,
+    content,
+    date: selectedDate,
+    done,
+  };
 
-export const modifyTodo = (dateKey, userId, index, text, isItDone) => {
-  if (!userId) return [];
+  return await modifyTodoRequest(todoId, todoData);
+};
 
-  const todos = todosDummy[userId]?.[dateKey] ?? [];
+export const deleteTodo = async (todoId) => {
+  if (!todoId) return false;
+  return await deleteTodoRequest(todoId);
+};
 
-  const newTodos = todos.map((todo, i) =>
-    i === index
-      ? {
-          ...todo,
-          text,
-          done: isItDone,
-        }
-      : todo
-  );
-
-  todosDummy[userId][dateKey] = newTodos;
-
-  console.log(todosDummy[userId][dateKey]);
-
-  return newTodos;
-}
-
-export const deleteTodo = (dateKey, userId, index) => {
-  if (!userId) return;
-
-  const todos = todosDummy[userId][dateKey]
-  const newTodos = todos.filter((_, i) => i !== index);
-
-  todosDummy[userId][dateKey] =  newTodos
-
-  console.log(todosDummy[userId][dateKey])
-
-  return;
-}
-
-export const toggleTodoDone = (dateKey, userId, index) => {
-  if (!userId) return;
-
-  const todos = todosDummy[userId]?.[dateKey];
-  if (!todos || !todos[index]) return;
-
-  todosDummy[userId][dateKey][index].done = !todosDummy[userId][dateKey][index].done;
-}
+export const toggleTodoDone = async (todoId, done) => {
+  if (!todoId) return null;
+  return await toggleTodoDoneRequest(todoId, done);
+};
