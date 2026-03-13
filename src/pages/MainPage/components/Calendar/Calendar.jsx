@@ -32,7 +32,11 @@ export default function Calendar({
       {Array.from({ length: 7 }, (_, d) => {
         const index = w * 7 + d;
         const dateKey = days[index] ? makeDateKey(days[index]) : null;
-        const todos = dateKey ? (todosByDate[dateKey] ?? []) : [];
+        const todos = dateKey
+          ? Array.isArray(todosByDate[dateKey])
+            ? todosByDate[dateKey]
+            : []
+          : [];
 
         return (
           <td
@@ -61,7 +65,7 @@ export default function Calendar({
               }}
             >
               {todos.map((todo) => (
-                <div css={s.ckbxTodo} key={todo.id}>
+                <div css={s.ckbxTodo} key={`${dateKey}-${todo.id}`}>
                   <input
                     type="checkbox"
                     checked={todo.done}
@@ -79,7 +83,7 @@ export default function Calendar({
                     css={s.label}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {todo.text}
+                    {todo.content}
                   </label>
                 </div>
               ))}

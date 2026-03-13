@@ -4,7 +4,6 @@ import { useUserStore } from "../../stores/useUserStore";
 import * as s from "./styles";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useDDayCalc } from "../../hooks/useDDayCalc";
 import { loginRequest, signupRequest } from "../../apis/authApi";
 
 export default function LoginPage() {
@@ -22,11 +21,16 @@ export default function LoginPage() {
 
     try {
       const loginUser = await loginRequest(idInputVal, pwInputVal);
+      console.log("loginUser:", loginUser);
 
       const normalizedUser = {
         id: loginUser.userId,
         loginId: loginUser.loginId,
         nickname: loginUser.nickname,
+        pw: loginUser.password,
+        ddayname: loginUser.ddayname,
+        ddaydate: loginUser.ddaydate,
+        ddaynum: loginUser.ddaynum,
         message: loginUser.message,
       };
 
@@ -44,12 +48,6 @@ export default function LoginPage() {
 
   const signupClickHandler = async () => {
     const pwRegEx = /^(?=.*[a-z])(?=.*[^A-Za-z0-9]).{8,}$/;
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const newYear = new Date(currentYear + 1, 0, 1);
-    const ddayYear = newYear.getFullYear().toString();
-    const ddayDate = ddayYear + "01" + "01";
-    const ddayNum = useDDayCalc(today, newYear);
 
     if (idInputVal.length < 4 || idInputVal.length > 20) {
       alert("ID는 4자 이상 20자 이하여야 합니다.");

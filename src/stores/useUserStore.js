@@ -7,11 +7,6 @@ export const useUserStore = create((set) => ({
 
   clearUser: () => set({ user: null }),
 
-  deleteUser: () =>
-    set((state) => ({
-      user: null,
-    })),
-
   updateUser: (patch) =>
     set((state) => ({
       user: state.user ? { ...state.user, ...patch } : { ...patch },

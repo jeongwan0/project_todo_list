@@ -6,25 +6,13 @@ import { AiOutlineUser, AiOutlineUserDelete } from "react-icons/ai";
 import { TbLockPassword, TbCalendarCog } from "react-icons/tb";
 import { useDDayCalc } from "../../hooks/useDDayCalc";
 import { useNavigate } from "react-router-dom";
+import { deleteUserRequest, updateUserRequest } from "../../apis/authApi";
 
 export default function MyPage() {
   const navigate = useNavigate();
   const user = useUserStore((s) => s.user);
-  const users = useUserStore((s) => s.users);
   const updateUser = useUserStore((s) => s.updateUser);
   const logoutUser = useUserStore((s) => s.clearUser);
-  const deleteUser = useUserStore((s) => s.deleteUser);
-  const nickname = user.nickname;
-  const id = user.id;
-  const pw = user.pw;
-  const ddayName = user.ddayname;
-  const ddayDate = user.ddaydate;
-  const ddayNum = user.ddaynum;
-  const nicknameRef = useRef(null);
-  const pwRef = useRef(null);
-  const ddaynameRef = useRef(null);
-  const ddaydateRef = useRef(null);
-
   const ddayDateToDate = (n) => {
     const string = String(n);
     const y = Number(string.slice(0, 4));
@@ -32,16 +20,25 @@ export default function MyPage() {
     const d = Number(string.slice(6, 8));
     return new Date(y, m - 1, d);
   };
-  
   const ddayCalc = (ddayDate) => {
     return useDDayCalc(new Date(), ddayDateToDate(ddayDate));
   };
+  const id = user?.loginId ?? "";
+  const nickname = user?.nickname ?? "";
+  const pw = user?.pw ?? "";
+  const ddayName = user?.ddayname ?? "신년";
+  const ddayDate = user?.ddaydate ?? "20270101";
+  const ddayNum = user?.ddaynum ?? ddayCalc(user?.ddaydate ?? "20270101");
+  const nicknameRef = useRef(null);
+  const pwRef = useRef(null);
+  const ddaynameRef = useRef(null);
+  const ddaydateRef = useRef(null);
 
   const [inputVal, setInputVal] = useState({
-    nickname: nickname,
-    pw: pw,
-    ddayname: ddayName,
-    ddaydate: ddayDate,
+    nickname: user?.nickname ?? "",
+    pw: user?.pw ?? "",
+    ddayname: user?.ddayname ?? "신년",
+    ddaydate: user?.ddaydate ?? "20270101",
   });
 
   const [changeBtnClick, setChangeBtnClick] = useState({
@@ -57,21 +54,43 @@ export default function MyPage() {
     setInputVal((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleChangeBtn = (e) => {
+  const handleChangeBtn = async (e) => {
     const id = e.currentTarget.id;
 
     if (changeBtnClick[id]) {
-      if (id === "ddayname" || id === "ddaydate") {
-        const newName = id === "ddayname" ? inputVal.ddayname : ddayName;
-        const newDate =
-          id === "ddaydate" ? String(inputVal.ddaydate) : ddayDate;
+      try {
+        let updatedUser;
+
+        if (id === "ddayname" || id === "ddaydate") {
+          const newName = id === "ddayname" ? inputVal.ddayname : ddayName;
+          const newDate = id === "ddaydate" ? String(inputVal.ddaydate) : ddayDate;
+
+          updatedUser = await updateUserRequest(user?.id, {
+            ddayname: newName,
+            ddaydate: newDate,
+            ddaynum: ddayCalc(newDate),
+          });
+        } else if (id === "nickname") {
+          updatedUser = await updateUserRequest(user?.id, {
+            nickname: inputVal.nickname,
+          });
+        } else if (id === "pw") {
+          updatedUser = await updateUserRequest(user?.id, {
+            password: inputVal.pw,
+          });
+        }
+
         updateUser({
-          ddayname: newName,
-          ddaydate: newDate,
-          ddaynum: ddayCalc(newDate),
+          nickname: updatedUser.nickname,
+          pw: updatedUser.password,
+          ddayname: updatedUser.ddayname,
+          ddaydate: updatedUser.ddaydate,
+          ddaynum: updatedUser.ddaynum,
         });
-      } else {
-        updateUser({ [id]: inputVal[id] });
+      } catch (error) {
+        console.error(error);
+        alert("수정에 실패했습니다.");
+        return;
       }
     }
 
@@ -86,26 +105,31 @@ export default function MyPage() {
 
       return next;
     });
-  }
+  };
 
   const handleLogoutBtn = () => {
     logoutUser();
     navigate("/")
     alert("로그아웃 되었습니다.")
-  }
+  };
 
-  const handleDeleteBtn = () => {
+  const handleDeleteBtn = async () => {
     const isReal = window.prompt("정말 탈퇴하시겠습니까?\n탈퇴하시려면 '회원 탈퇴'를 정확히 입력하세요.");
 
-    if (isReal != '회원 탈퇴') {
+    if (isReal !== "회원 탈퇴") {
       return;
     }
 
-    deleteUser();
-    logoutUser();
-    navigate("/")
-    alert("탈퇴 되었습니다.")
-  }
+    try {
+      await deleteUserRequest(user?.id);
+      logoutUser();
+      navigate("/");
+      alert("탈퇴 되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("회원탈퇴에 실패했습니다.");
+    }
+  };
 
   const plusMinus = (ddayNum) => {
     if (ddayNum > 0) {
@@ -115,7 +139,7 @@ export default function MyPage() {
     } else {
       return `D+${-ddayNum}`;
     }
-  }
+  };
 
   const focusInputById = (id) => {
     if (id === "nickname") nicknameRef.current?.focus();

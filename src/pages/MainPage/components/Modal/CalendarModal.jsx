@@ -114,28 +114,35 @@ export default function CalendarModal({
       if (!targetTodo) return;
 
       if (editingTodoId === todoId) {
-        await modifyTodo(
-          todoId,
-          inputVal.modifyInput,
-          targetTodo.done,
-          selectedDate,
-          user?.id,
-        );
+        if (!inputVal.modifyInput.trim()) return;
 
-        await loadTodos();
-        await loadMonthTodos();
-        setEditingTodoId(null);
-        setInputVal((prev) => ({
-          ...prev,
-          modifyInput: "",
-        }));
+        try {
+          await modifyTodo(
+            todoId,
+            inputVal.modifyInput,
+            targetTodo.done,
+            selectedDate,
+            user?.id,
+          );
+
+          await loadTodos();
+          await loadMonthTodos();
+          setEditingTodoId(null);
+          setInputVal((prev) => ({
+            ...prev,
+            modifyInput: "",
+          }));
+        } catch (error) {
+          console.error("수정 실패", error);
+          alert("수정에 실패했습니다.");
+        }
         return;
       }
 
       setEditingTodoId(todoId);
       setInputVal((prev) => ({
         ...prev,
-        modifyInput: targetTodo.text,
+        modifyInput: targetTodo.content,
       }));
       return;
     }
@@ -144,15 +151,20 @@ export default function CalendarModal({
       const isDelete = window.confirm("정말 삭제하시겠습니까?");
       if (!isDelete) return;
 
-      await deleteTodo(Number(name));
-      await loadTodos();
-      await loadMonthTodos();
+      try {
+        await deleteTodo(Number(name));
+        await loadTodos();
+        await loadMonthTodos();
+      } catch (error) {
+        console.error("삭제 실패", error);
+        alert("삭제에 실패했습니다.");
+      }
       return;
     }
   };
 
   const filteredTodos = dayTodos.filter((todo) =>
-    todo.text.toLowerCase().includes(searchText.toLowerCase()),
+    (todo.content ?? "").toLowerCase().includes(searchText.toLowerCase()),
   );
 
   const handleInputChange = (e) => {
@@ -215,7 +227,7 @@ export default function CalendarModal({
             </div>
             <div css={s.cardTodos}>
               {filteredTodos.map((todo) => (
-                <div css={s.ckbxDiv} key={todo.id}>
+                <div css={s.ckbxDiv} key={`${selectedDate}-${todo.id}`}>
                   <div css={s.inputDiv}>
                     <input
                       type="checkbox"
@@ -248,7 +260,7 @@ export default function CalendarModal({
                         css={s.ckbxLabel}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {todo.text}
+                        {todo.content}
                       </label>
                     )}
 
@@ -275,7 +287,7 @@ export default function CalendarModal({
                 </div>
               ))}
               {isAddingTodo && (
-                <div css={s.ckbxDiv} key={`todo-add`}>
+                <div css={s.ckbxDiv} key={`${selectedDate}-todo-add`}>
                   <div css={s.inputDiv}>
                     <input
                       type="checkbox"

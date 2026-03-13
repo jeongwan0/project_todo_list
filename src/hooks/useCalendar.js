@@ -1,20 +1,50 @@
 import {
   getTodosByDateRequest,
-  getMonthTodosRequest,
   addTodoRequest,
   modifyTodoRequest,
   deleteTodoRequest,
   toggleTodoDoneRequest,
 } from "../apis/todoApi";
 
+const normalizeTodo = (todo) => ({
+  ...todo,
+  id: todo.id ?? todo.todoId,
+  done: todo.done ?? todo.isDone ?? false,
+});
+
 export const monthTodo = async (currentYear, currentMonth, userId) => {
   if (!userId) return [];
-  return await getMonthTodosRequest(userId, currentYear, currentMonth);
+
+  const lastDate = new Date(currentYear, currentMonth, 0).getDate();
+
+  const requests = Array.from({ length: lastDate }, async (_, i) => {
+    const day = i + 1;
+    const dateKey = `${currentYear}${String(currentMonth).padStart(2, "0")}${String(day).padStart(2, "0")}`;
+
+    try {
+      const result = await getTodosByDateRequest(userId, toApiDate(dateKey));
+
+      return {
+        dateKey,
+        todos: Array.isArray(result?.todos)
+          ? result.todos.map(normalizeTodo)
+          : [],
+      };
+    } catch (error) {
+      console.error(`${dateKey} 조회 실패`, error);
+      return { dateKey, todos: [] };
+    }
+  });
+  
+  return await Promise.all(requests);
 };
 
 export const dayTodo = async (selectedDate, userId) => {
-  if (!userId) return [];
-  return await getTodosByDateRequest(userId, selectedDate);
+  const result = await getTodosByDateRequest(userId, toApiDate(selectedDate));
+
+  return Array.isArray(result?.todos)
+    ? result.todos.map(normalizeTodo)
+    : [];
 };
 
 export const addTodo = async (selectedDate, userId, content, done = false) => {
@@ -23,7 +53,7 @@ export const addTodo = async (selectedDate, userId, content, done = false) => {
   const todoData = {
     userId,
     content,
-    date: selectedDate,
+    date: toApiDate(selectedDate),
     done,
   };
 
@@ -42,7 +72,7 @@ export const modifyTodo = async (
   const todoData = {
     userId,
     content,
-    date: selectedDate,
+    date: toApiDate(selectedDate),
     done,
   };
 
@@ -58,3 +88,6 @@ export const toggleTodoDone = async (todoId, done) => {
   if (!todoId) return null;
   return await toggleTodoDoneRequest(todoId, done);
 };
+
+const toApiDate = (dateKey) =>
+  `${dateKey.slice(0, 4)}-${dateKey.slice(4, 6)}-${dateKey.slice(6, 8)}`;
