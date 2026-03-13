@@ -21,7 +21,6 @@ export default function LoginPage() {
 
     try {
       const loginUser = await loginRequest(idInputVal, pwInputVal);
-      console.log("loginUser:", loginUser);
 
       const normalizedUser = {
         id: loginUser.userId,
@@ -38,7 +37,6 @@ export default function LoginPage() {
       setPwInputVal("");
       setUser(normalizedUser);
       alert(`${normalizedUser.nickname}님, 반갑습니다.`);
-      console.log("로그인 성공");
       navigate("/");
     } catch (error) {
       alert("잘못된 ID/PW 입니다.");

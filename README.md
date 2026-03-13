@@ -1,18 +1,25 @@
-# React + Vite
+# project_todo_list
 
-https://github.com/elikese
+React 기반의 투두리스트 및 캘린더 프론트엔드 프로젝트입니다.  
+로그인/회원가입, 사용자별 투두 관리, 캘린더 UI를 중심으로 구성했습니다.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 주요 기능
+- 로그인 / 회원가입 통합 페이지
+- 사용자 정보 저장
+- 날짜별 Todo 조회
+- Todo 추가 / 수정 / 삭제
+- Todo 완료 여부 체크
+- 캘린더 기반 일정 확인 UI
 
-Currently, two official plugins are available:
+## Tech Stack
+- React
+- Vite
+- Zustand
+- Axios
+- Emotion
+- React Router
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 실행 방법
+```bash
+npm install
+npm run dev

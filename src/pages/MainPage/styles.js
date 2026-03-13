@@ -17,7 +17,6 @@ export const dateDiv = css`
 export const calendarDiv = css`
   width: 100%;
   height: 200%;
-  background-color: beige;
 `;
 
 export const leftDiv = css`
